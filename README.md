@@ -29,16 +29,33 @@ Park & Ride is a comprehensive urban mobility solution designed to simplify comm
 ## 📸 Screenshots
 
 ### Home & Dashboard
-*[Screenshots of the home page and dashboard showing reservation stats and last-mile ride options]*
+![Dashboard Overview](docs/images/screenshots/dashboard.png)
+*The main dashboard provides at-a-glance information about reservations, rewards, and last-mile rides.*
 
 ### Parking Reservation
-*[Screenshots of the parking reservation process, including location selection, date/time picker, and confirmation screen]*
+![Reservation Form](docs/images/screenshots/reservation_form.png)
+*The intuitive parking reservation form with date/time selection and flexible booking options.*
+
+![My Reservations](docs/images/screenshots/my_reservations.png)
+*View and manage your active, upcoming, and past reservations with easy access to parking passes.*
 
 ### Last-Mile Rides
-*[Screenshots of the Last-Mile Rides interface, showing destination options, ride types, and booking confirmation]*
+![Last-Mile Rides Overview](docs/images/screenshots/lastmile_overview.png)
+*Browse popular destinations with pricing information and quick-booking options.*
+
+![Ride Booking Options](docs/images/screenshots/ride_booking.png)
+*Choose from multiple transportation options including cabs, shuttles, and e-rickshaws with real-time pricing.*
 
 ### User Account
-*[Screenshots of the user account pages, including reservation history and rewards section]*
+![User Profile](docs/images/screenshots/user_profile.png)
+*Manage your personal information and vehicle details in the user profile section.*
+
+![Rewards Program](docs/images/screenshots/rewards.png)
+*Earn and redeem points through our comprehensive rewards program.*
+
+### Authentication
+![Registration Form](docs/images/screenshots/registration.png)
+*Easy and secure registration process for new users.*
 
 ## 🔧 Installation & Setup
 
