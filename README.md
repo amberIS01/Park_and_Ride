@@ -58,19 +58,6 @@ Park & Ride is a comprehensive urban mobility solution designed to simplify comm
 *Easy and secure registration process for new users.*
 
 ## 🔧 Installation & Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/park-and-ride.git
-
-# Navigate to the project directory
-cd park-and-ride
-
-# Install dependencies
-mvn install
-
-# Run the application
-mvn spring-boot:run
 ```
 
 The application will be available at `http://localhost:8080`
@@ -118,4 +105,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Developed with ❤️ by [Your Name] 
+Developed with ❤️ by Team Park & Ride 
