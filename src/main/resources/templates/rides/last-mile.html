@@ -21,37 +21,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--light-color);
             transition: background-color 0.3s ease;
-        }
-        
-        body.dark-mode {
-            background-color: #1a1d20;
-            color: #e9ecef;
-        }
-        
-        .dark-mode .card,
-        .dark-mode .bg-light,
-        .dark-mode .list-group-item,
-        .dark-mode .modal-content {
-            background-color: #2c3034 !important;
-            color: #e9ecef;
-            border-color: #444;
-        }
-        
-        .dark-mode .text-dark {
-            color: #e9ecef !important;
-        }
-        
-        .dark-mode .border {
-            border-color: #444 !important;
-        }
-        
-        .dark-mode .text-muted {
-            color: #adb5bd !important;
-        }
-        
-        .dark-mode .btn-outline-dark {
-            color: #e9ecef;
-            border-color: #e9ecef;
+            padding-top: 56px; /* Added to prevent content from being hidden behind fixed mobile navbar */
         }
         
         .sidebar {
@@ -59,66 +29,217 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 250px;
-            z-index: 100;
-            padding-top: 20px;
+            width: 250px; /* Standardized width */
+            z-index: 1000; /* Ensure sidebar is above mobile navbar overlay */
             box-shadow: var(--box-shadow);
             transition: all 0.3s;
+            background-color: #ffffff; /* Ensure light mode background */
+            padding-top: 0; /* Remove direct padding-top, handled by sidebar-sticky or mobile navbar adjustments */
         }
         
         .sidebar-sticky {
-            position: relative;
+            position: relative; 
             top: 0;
-            height: calc(100vh - 60px);
-            padding-top: 0.5rem;
+            height: 100%; 
+            padding-top: 1rem; 
             overflow-x: hidden;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         
         .main-content {
             margin-left: 250px;
             transition: all 0.3s;
+            padding-top: 1rem; /* Adjust if fixed top bar is present on desktop too, or manage via body padding-top */
+        }
+
+        .sidebar-brand-logo {
+            padding-left: 1rem; 
+            margin-bottom: 1rem; 
+        }
+
+        .sidebar-user-info {
+            padding-left: 1rem; 
+            padding-right: 1rem; 
+            margin-bottom: 1rem; 
+        }
+        .sidebar-user-info h6 {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .text-muted {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .user-points {
+            font-size: 0.9em;
+        }
+        .sidebar-user-info .badge {
+            font-size: 0.8em;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #333; 
+            padding: 0.75rem 1.5rem;
+        }
+        .sidebar .nav-link.active {
+            color: #0d6efd; 
+        }
+        .sidebar .nav-link:hover {
+            color: #0d6efd;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px; 
+        }
+
+        .sidebar-footer {
+            padding: 1rem; 
+            margin-top: auto; 
+        }
+        .sidebar-footer .theme-toggle span {
+            margin-left: 0.5rem;
         }
         
+        /* Responsive adjustments from my-rides.html (Gold Standard) */
         @media (max-width: 767.98px) {
+            body {
+                 padding-top: 56px; /* Height of the fixed mobile navbar */
+            }
             .sidebar {
-                width: 60px;
-                transform: translateX(-200px);
-                padding-top: 60px;
+                /* Bootstrap's .collapse handles showing/hiding. When shown, it should overlay. */
+                /* The 'collapse' class is on the sidebar nav element. */
+                /* The button data-bs-target="#sidebarMenu" toggles it. */
+                /* Ensure it appears correctly when toggled. */
+                margin-top: 56px; /* Push sidebar content below the fixed top navbar */
+                height: calc(100vh - 56px); /* Adjust height for the space taken by navbar */
+                z-index: 1030; /* Ensure it's above other content but potentially below modals if needed */
             }
             
-            .sidebar:hover {
-                width: 250px;
-                transform: translateX(0);
+            .sidebar.collapse.show, .sidebar.collapsing {
+                 transform: none !important; /* Override any lingering transforms */
+                 width: 250px !important; /* Ensure full width when shown */
             }
-            
+
             .main-content {
-                margin-left: 60px;
+                margin-left: 0; /* Full width for main content on mobile */
+                padding-top: 1rem; /* Reset or adjust as needed if mobile navbar affects it */
             }
-            
-            .sidebar .nav-link span,
-            .sidebar .navbar-brand span {
-                display: none;
-            }
-            
-            .sidebar:hover .nav-link span,
-            .sidebar:hover .navbar-brand span {
-                display: inline;
-            }
+            /* Hide text in collapsed sidebar is not applicable for Bootstrap overlay */
         }
         
-        .ride-card {
+        /* Dark mode styles (from my-rides.html) */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e9ecef; /* Adjusted from #f8f9fa for potentially better contrast on #121212 */
+        }
+        
+        .dark-mode .sidebar {
+            background-color: #212529; 
+            border-right: 1px solid #343a40; 
+        }
+        .dark-mode .sidebar .nav-link {
+            color: #adb5bd; 
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #6ea8fe; 
+        }
+        .dark-mode .sidebar .nav-link:hover {
+            color: #ffffff;
+        }
+        .dark-mode .sidebar .sidebar-brand-logo .text-dark, 
+        .dark-mode .sidebar .sidebar-user-info h6 { 
+            color: #f8f9fa !important;
+        }
+        .dark-mode .sidebar .sidebar-user-info .text-muted { 
+            color: #adb5bd !important;
+        }
+        .dark-mode .sidebar .user-subscription .badge.bg-success { 
+            background-color: #1e7e34 !important; /* Added !important for specificity */
+            color: #ffffff !important; 
+        }
+        .dark-mode .sidebar .user-points { 
+            color: #ffc107 !important; 
+        }
+        .dark-mode .sidebar hr {
+            border-top-color: #444;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary { 
+             color: #adb5bd;
+             border-color: #adb5bd;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary:hover {
+            color: #212529;
+            background-color: #adb5bd;
+        }
+
+        /* General Dark Mode for page content (from my-rides.html) */
+        .dark-mode .card,
+        .dark-mode .bg-light, /* For elements that use bg-light */
+        .dark-mode .list-group-item,
+        .dark-mode .modal-content {
+            background-color: #2c3034 !important; /* Darker card for content */
+            color: #e9ecef;
+            border-color: #444;
+        }
+        .dark-mode .form-control,
+        .dark-mode .form-select {
+            background-color: #212529; /* Darker inputs */
+            color: #e9ecef;
+            border-color: #444;
+        }
+        .dark-mode .form-control::placeholder { /* Placeholder text in dark mode */
+            color: #6c757d;
+        }
+        .dark-mode .form-floating > label { /* For floating labels */
+            color: #adb5bd;
+        }
+        .dark-mode .text-dark {
+            color: #e9ecef !important;
+        }
+        .dark-mode .border {
+            border-color: #444 !important;
+        }
+        .dark-mode .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .btn-outline-dark { 
+            color: #e9ecef;
+            border-color: #e9ecef;
+        }
+        .dark-mode .btn-outline-dark:hover {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+        .dark-mode .navbar.bg-light { /* Mobile top navbar */
+             background-color: #212529 !important;
+             border-bottom: 1px solid #343a40;
+        }
+        .dark-mode .navbar.bg-light .navbar-brand,
+        .dark-mode .navbar.bg-light .navbar-toggler-icon {
+            color: #f8f9fa !important;
+        }
+         .dark-mode .navbar-toggler {
+            border-color: rgba(255,255,255,0.25);
+        }
+        .dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        .dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        /* End General Dark Mode */
+
+        /* last-mile.html specific styles */
+        .ride-card { /* As originally in last-mile.html */
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--box-shadow);
             transition: transform 0.3s ease;
             height: 100%;
         }
-        
         .ride-card:hover {
             transform: translateY(-5px);
         }
-        
         .promo-banner {
             background: linear-gradient(135deg, var(--primary-color), #0056b3);
             border-radius: var(--border-radius);
@@ -126,14 +247,12 @@
             margin-bottom: 30px;
             box-shadow: var(--box-shadow);
         }
-        
         .feature-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
             display: inline-block;
             color: var(--primary-color);
         }
-        
         .destination-card {
             border-radius: var(--border-radius);
             overflow: hidden;
@@ -142,48 +261,38 @@
             cursor: pointer;
             height: 100%;
         }
-        
         .destination-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-        
-        .destination-card .card-img-overlay {
+        .destination-card .card-img-overlay { /* This style was present in original last-mile.html */
             background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.1));
         }
-        
         .time-slot {
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
         .time-slot:hover, .time-slot.selected {
             background-color: var(--primary-color);
             color: white;
         }
-        
         .payment-option {
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
         .payment-option:hover, .payment-option.selected {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 1px var(--primary-color);
         }
-        
         .booking-summary {
             background-color: rgba(13, 110, 253, 0.05);
             border-radius: var(--border-radius);
             padding: 20px;
             border-left: 4px solid var(--primary-color);
         }
-        
         .modal-dialog.review-modal {
             max-width: 600px;
         }
-        
-        /* Custom styles for star rating */
         .rating-stars {
             display: inline-block;
             position: relative;
@@ -191,7 +300,6 @@
             line-height: 30px;
             font-size: 30px;
         }
-        
         .rating-stars input {
             opacity: 0;
             position: absolute;
@@ -203,21 +311,18 @@
             cursor: pointer;
             z-index: 2;
         }
-        
         .rating-stars .filled-stars {
             position: absolute;
             left: 0;
             top: 0;
             white-space: nowrap;
             overflow: hidden;
-            color: #ffc107;
+            color: #ffc107; /* var(--accent-color) */
             z-index: 1;
         }
-        
         .rating-stars .empty-stars {
             color: #adb5bd;
         }
-        
         .driver-status {
             position: absolute;
             right: 15px;
@@ -229,77 +334,142 @@
             box-shadow: 0 0 0 2px white;
             z-index: 2;
         }
-        
-        /* Animation */
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Dark mode for last-mile.html specific elements */
+        .dark-mode .promo-banner {
+            color: white; /* Ensure text on gradient is readable */
+        }
+        .dark-mode .time-slot:hover, .dark-mode .time-slot.selected {
+            background-color: var(--primary-color); 
+            color: white;
+        }
+        .dark-mode .payment-option:hover, .dark-mode .payment-option.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+        .dark-mode .booking-summary {
+            background-color: rgba(13, 110, 253, 0.15); 
+            border-left-color: var(--primary-color);
+            color: #e9ecef; /* Ensure text is light */
+        }
+        .dark-mode .destination-card .card-img-overlay { /* Ensure text in overlay is visible */
+             color: white;
+        }
+        .dark-mode .feature-icon {
+            color: var(--primary-color); /* Keep primary color for feature icons */
+        }
+        .dark-mode .driver-status { /* Ensure driver status dot is visible on dark cards */
+             box-shadow: 0 0 0 2px #2c3034; /* Use card background for shadow */
+        }
+
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-white h-100">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <!-- Top Navbar for mobile -->
+    <nav class="navbar navbar-light bg-light fixed-top shadow-sm d-md-none">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/" th:href="@{/}">
                 <i class="fas fa-car-side text-primary me-2"></i>
-                <span class="fs-4 fw-bold">Park & Ride</span>
+                Park & Ride
             </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="d-md-block sidebar collapse">
+        <div class="position-sticky pt-3 sidebar-sticky"> 
+            
+            <div class="sidebar-brand-logo d-flex align-items-center">
+                <a href="/" th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
+                    <i class="fas fa-car-side text-primary me-2 fa-2x"></i>
+                    <span class="fs-4 fw-bold">Park & Ride</span>
+                </a>
+            </div>
+
+            <div class="text-center mb-4 sidebar-user-info" th:if="${user != null}">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-4x text-primary"></i>
+                </div>
+                <h6 th:text="${user.firstName + ' ' + user.lastName}">Test User</h6>
+                <small class="text-muted d-block" th:text="${user.email}">test@parkandride.com</small>
+                <small class="text-muted d-block user-points"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</small>
+                <div class="mt-2 user-subscription" th:if="${user.hasActiveSubscription()}">
+                     <span class="badge bg-success" th:text="${user.subscriptionType != null ? user.subscriptionType.displayName : 'Active Subscription'}">Active Subscription</span>
+                </div>
+                 <div class="mt-2 user-subscription" th:unless="${user.hasActiveSubscription()}" style="min-height: 24px;"> 
+                </div>
+            </div>
+            <hr th:if="${user != null}" class="mx-3 my-2">
+
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="/dashboard" th:href="@{/dashboard}" class="nav-link text-dark">
-                        <i class="fas fa-tachometer-alt me-2"></i>
-                        Dashboard
+                    <a class="nav-link text-dark" href="/dashboard" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/parking/my-reservations" th:href="@{/parking/my-reservations}" class="nav-link text-dark">
-                        <i class="fas fa-ticket-alt me-2"></i>
-                        My Reservations
+                    <a class="nav-link text-dark" href="/parking/my-reservations" th:href="@{/parking/my-reservations}">
+                        <i class="fas fa-ticket-alt me-2"></i>My Reservations
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/rides/last-mile" th:href="@{/rides/last-mile}" class="nav-link active text-white bg-primary">
-                        <i class="fas fa-shuttle-van me-2"></i>
-                        Last-Mile Rides
+                    <a class="nav-link text-dark" href="/user/subscriptions" th:href="@{/user/subscriptions}">
+                        <i class="fas fa-calendar-check me-2"></i>Subscriptions
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/rides/my-rides" th:href="@{/rides/my-rides}" class="nav-link text-dark">
-                        <i class="fas fa-history me-2"></i>
-                        My Rides
+                    <a class="nav-link text-dark" href="/user/rewards" th:href="@{/user/rewards}">
+                        <i class="fas fa-gift me-2"></i>Rewards
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/user/profile" th:href="@{/user/profile}" class="nav-link text-dark">
-                        <i class="fas fa-user-cog me-2"></i>
-                        Profile
+                    <a class="nav-link active text-primary" href="/rides/last-mile" th:href="@{/rides/last-mile}"> <!-- Active class here -->
+                        <i class="fas fa-shuttle-van me-2"></i>Last-Mile Rides
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/logout" th:href="@{/logout}" class="nav-link text-dark">
-                        <i class="fas fa-sign-out-alt me-2"></i>
-                        Logout
+                    <a class="nav-link text-dark" href="/rides/my-rides" th:href="@{/rides/my-rides}">
+                        <i class="fas fa-history me-2"></i>My Rides
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/user/profile" th:href="@{/user/profile}">
+                        <i class="fas fa-user-cog me-2"></i>Profile
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <hr class="mx-3 my-2">
+                <button id="themeToggle" class="btn btn-sm btn-outline-secondary theme-toggle w-100 mb-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-moon me-2"></i> 
+                    <span>Dark Mode</span> 
+                </button>
+                <hr class="mx-3 my-2">
+                <a class="nav-link text-dark d-flex align-items-center justify-content-center" href="/logout" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
         </div>
-    </div>
+    </nav>
 
     <!-- Main Content -->
-    <div class="main-content p-4 pb-5">
+    <div class="main-content p-4 pb-5"> <!-- Changed from main class="content-wrapper" -->
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0"><i class="fas fa-shuttle-van text-primary me-2"></i>Last-Mile Rides</h2>
                 <div>
-                    <button class="btn btn-sm btn-outline-dark me-2" id="themeToggle">
-                        <i class="fas fa-moon"></i> Dark Mode
-                    </button>
+                    <!-- Theme toggle button removed from here -->
                     <a href="/rides/my-rides" th:href="@{/rides/my-rides}" class="btn btn-sm btn-primary">
                         <i class="fas fa-history"></i> My Ride History
                     </a>
@@ -502,7 +672,7 @@
                                         <label class="form-label">Ride Type</label>
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <div class="card ride-card" onclick="selectRideType('cab')">
+                                                <div class="card ride-card" onclick="selectRideType('cab', this)">
                                                     <div class="card-body text-center">
                                                         <div class="feature-icon">
                                                             <i class="fas fa-taxi"></i>
@@ -517,7 +687,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="card ride-card" onclick="selectRideType('shuttle')">
+                                                <div class="card ride-card" onclick="selectRideType('shuttle', this)">
                                                     <div class="card-body text-center">
                                                         <div class="feature-icon">
                                                             <i class="fas fa-shuttle-van"></i>
@@ -532,7 +702,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="card ride-card" onclick="selectRideType('erickshaw')">
+                                                <div class="card ride-card" onclick="selectRideType('erickshaw', this)">
                                                     <div class="card-body text-center">
                                                         <div class="feature-icon">
                                                             <i class="fas fa-charging-station"></i>
@@ -554,7 +724,7 @@
                                         <label class="form-label">Cab Sharing Options</label>
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <div class="card h-100 sharing-option" onclick="selectSharingOption('private')">
+                                                <div class="card h-100 sharing-option" onclick="selectSharingOption('private', this)">
                                                     <div class="card-body">
                                                         <div class="d-flex align-items-center mb-2">
                                                             <div class="me-3">
@@ -573,7 +743,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="card h-100 sharing-option" onclick="selectSharingOption('shared')">
+                                                <div class="card h-100 sharing-option" onclick="selectSharingOption('shared', this)">
                                                     <div class="card-body">
                                                         <div class="d-flex align-items-center mb-2">
                                                             <div class="me-3">
@@ -599,7 +769,7 @@
                                         <label class="form-label">Payment Method</label>
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <div class="card h-100 payment-option" onclick="selectPaymentMethod('cash')">
+                                                <div class="card h-100 payment-option" onclick="selectPaymentMethod('cash', this)">
                                                     <div class="card-body text-center">
                                                         <i class="fas fa-money-bill-wave text-success fs-3 mb-2"></i>
                                                         <h5 class="card-title">Cash</h5>
@@ -607,7 +777,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="card h-100 payment-option" onclick="selectPaymentMethod('upi')">
+                                                <div class="card h-100 payment-option" onclick="selectPaymentMethod('upi', this)">
                                                     <div class="card-body text-center">
                                                         <i class="fas fa-mobile-alt text-primary fs-3 mb-2"></i>
                                                         <h5 class="card-title">UPI</h5>
@@ -615,7 +785,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="card h-100 payment-option" onclick="selectPaymentMethod('card')">
+                                                <div class="card h-100 payment-option" onclick="selectPaymentMethod('card', this)">
                                                     <div class="card-body text-center">
                                                         <i class="far fa-credit-card text-info fs-3 mb-2"></i>
                                                         <h5 class="card-title">Card</h5>
@@ -977,33 +1147,365 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/last-mile-rides.js"></script>
     <script>
+        // Global variables for booking state
+        let pickupLocation = "Park & Ride Parking Lot";
+        let destination = "";
+        let scheduleType = "now";
+        let scheduleDateTime = "";
+        let passengerCount = 1;
+        let rideType = ""; // e.g., 'cab', 'shuttle', 'erickshaw'
+        let sharingOption = ""; // e.g., 'private', 'shared' (if rideType is 'cab')
+        let paymentMethod = ""; // e.g., 'cash', 'upi', 'card'
+        let promoCodeApplied = ""; // Store the applied promo code
+        
+        // Fare related variables - these would ideally be calculated server-side or more robustly client-side
+        let currentBaseFare = 0;
+        let currentDistanceFee = 0;
+        let currentTimeFee = 0;
+        let currentDiscount = 0;
+        let currentTaxes = 0;
+        let currentTotalFare = 0;
+
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('themeToggle');
-            const body = document.body;
+            // Standard Theme toggle functionality (should be unique)
+            const themeToggleButton = document.getElementById('themeToggle'); // Renamed to avoid conflict
+            const bodyElement = document.body; // Renamed to avoid conflict
             
-            // Check for stored preference and apply it
-            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-            if (darkModeEnabled) {
-                body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            if (themeToggleButton) {
+                const themeToggleIconElement = themeToggleButton.querySelector('i'); // Renamed
+                const themeToggleTextElement = themeToggleButton.querySelector('span'); // Renamed
+
+                function applyTheme(isDark) {
+                    bodyElement.classList.toggle('dark-mode', isDark);
+                    if (themeToggleIconElement && themeToggleTextElement) {
+                        if (isDark) {
+                            themeToggleIconElement.classList.remove('fa-moon');
+                            themeToggleIconElement.classList.add('fa-sun');
+                            themeToggleTextElement.textContent = 'Light Mode';
+                        } else {
+                            themeToggleIconElement.classList.remove('fa-sun');
+                            themeToggleIconElement.classList.add('fa-moon');
+                            themeToggleTextElement.textContent = 'Dark Mode';
+                        }
+                    }
+                    localStorage.setItem('darkMode', isDark);
+                }
+
+                const storedDarkMode = localStorage.getItem('darkMode') === 'true'; // Renamed
+                applyTheme(storedDarkMode);
+                
+                themeToggleButton.addEventListener('click', function() {
+                    applyTheme(!bodyElement.classList.contains('dark-mode'));
+                });
+            }
+
+            // Ride booking specific JS
+            const rideBookingForm = document.getElementById('rideBookingForm');
+            if (rideBookingForm) {
+                // Prevent default form submission if you're handling it via JS
+                rideBookingForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); 
+                    // The bookRide function is called by the button's onclick, 
+                    // so this listener might be redundant unless you remove onclick from the button.
+                    // For now, keeping it simple with onclick.
+                });
             }
             
-            themeToggle.addEventListener('click', function() {
-                body.classList.toggle('dark-mode');
-                
-                const isDarkMode = body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDarkMode);
-                
-                if (isDarkMode) {
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-                } else {
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-                }
+            // Event listener for schedule type change
+            document.querySelectorAll('input[name="scheduleType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    scheduleType = this.id;
+                    const dateTimeContainer = document.getElementById('scheduleDateTimeContainer');
+                    if (this.id === 'scheduleLater') {
+                        dateTimeContainer.classList.remove('d-none');
+                    } else {
+                        dateTimeContainer.classList.add('d-none');
+                    }
+                    updateLiveSummary();
+                });
             });
+
+            // Event listener for passenger count
+            const passengerCountSelect = document.getElementById('passengerCount');
+            if(passengerCountSelect) {
+                passengerCountSelect.addEventListener('change', function() {
+                    passengerCount = parseInt(this.value);
+                    updateLiveSummary();
+                });
+            }
+            
+            // Event listener for pickup and destination (for live summary)
+            const pickupInput = document.getElementById('pickupLocation');
+            const destinationInput = document.getElementById('destination');
+            if(pickupInput) pickupInput.addEventListener('input', () => { pickupLocation = pickupInput.value; updateLiveSummary(); });
+            if(destinationInput) destinationInput.addEventListener('input', () => { destination = destinationInput.value; updateLiveSummary(); });
+
+
+            // Initialize page - e.g., set default pickup, update summary
+            initializeLastMilePage(); 
         });
+
+        function initializeLastMilePage() {
+            // Set default pickup location if not already set by user interaction
+            const pickupInput = document.getElementById('pickupLocation');
+            if (pickupInput && !pickupInput.value) {
+                 pickupInput.value = pickupLocation; // Default value
+            }
+            updateLiveSummary(); // Initial summary update
+            // Any other initializations for the last-mile page
+        }
+
+        function selectDestination(destinationName) {
+            destination = destinationName;
+            const destinationInput = document.getElementById('destination');
+            if(destinationInput) destinationInput.value = destinationName;
+            updateLiveSummary();
+            // Potentially scroll to booking form or highlight next step
+        }
+
+        function selectRideType(type, cardElement) {
+            rideType = type;
+            // Visual feedback for selection
+            document.querySelectorAll('.ride-card.selected').forEach(card => card.classList.remove('selected', 'border-primary'));
+            if (cardElement) {
+                cardElement.classList.add('selected', 'border-primary');
+            }
+            
+            // Show/hide cab sharing options
+            const cabSharingDiv = document.getElementById('cabSharingOptions');
+            if (type === 'cab') {
+                cabSharingDiv.classList.remove('d-none');
+            } else {
+                cabSharingDiv.classList.add('d-none');
+                sharingOption = ""; // Reset if not a cab
+                document.querySelectorAll('.sharing-option.selected').forEach(card => card.classList.remove('selected', 'border-primary'));
+            }
+            updateFareAndSummary();
+        }
+
+        function selectSharingOption(option, cardElement) {
+            sharingOption = option;
+            // Visual feedback
+            document.querySelectorAll('.sharing-option.selected').forEach(card => card.classList.remove('selected', 'border-primary'));
+            if (cardElement) {
+                cardElement.classList.add('selected', 'border-primary');
+            }
+            updateFareAndSummary();
+        }
+
+        function selectPaymentMethod(method, cardElement) {
+            paymentMethod = method;
+            // Visual feedback
+            document.querySelectorAll('.payment-option.selected').forEach(card => card.classList.remove('selected', 'border-primary'));
+            if (cardElement) {
+                cardElement.classList.add('selected', 'border-primary');
+            }
+            updateLiveSummary();
+        }
+        
+        function applyPromoCodeFromModal() {
+            const promoInputModal = document.getElementById('promoCodeModalInput'); // Assuming this ID for modal input
+            if (promoInputModal) {
+                document.getElementById('promoCode').value = promoInputModal.value;
+                applyPromoCode();
+                var promoModal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
+                if (promoModal) {
+                    promoModal.hide();
+                }
+            }
+        }
+        
+        function selectPromoCodeInModal(code) {
+             const promoInputModal = document.getElementById('promoCodeModalInput'); // Assuming this ID for modal input
+             if(promoInputModal) promoInputModal.value = code;
+        }
+
+        function applyPromoCode() {
+            const promoCodeInput = document.getElementById('promoCode');
+            promoCodeApplied = promoCodeInput.value.trim().toUpperCase();
+            const promoStatus = document.getElementById('promoStatus');
+
+            // Reset discount
+            currentDiscount = 0;
+
+            if (promoCodeApplied === '') {
+                promoStatus.innerText = 'Enter a promo code or select one.';
+                promoStatus.className = 'form-text'; // Reset classes
+                updateFareAndSummary();
+                return;
+            }
+
+            // Simulate promo code validation and discount application
+            if (promoCodeApplied === 'FIRSTRIDE') {
+                currentDiscount = Math.min(currentBaseFare * 1, 150); // 100% off up to 150
+                promoStatus.innerText = 'FIRSTRIDE applied! First ride free (up to ₹150).';
+                promoStatus.className = 'form-text text-success';
+            } else if (promoCodeApplied === 'WEEKEND25') {
+                currentDiscount = Math.min(currentBaseFare * 0.25, 100); // 25% off up to 100
+                promoStatus.innerText = 'WEEKEND25 applied! 25% off (up to ₹100).';
+                promoStatus.className = 'form-text text-success';
+            } else if (promoCodeApplied === 'MONSOON20') {
+                 currentDiscount = Math.min(currentBaseFare * 0.20, 75); // 20% off up to 75
+                promoStatus.innerText = 'MONSOON20 applied! 20% off (up to ₹75).';
+                promoStatus.className = 'form-text text-success';
+            } else {
+                promoStatus.innerText = 'Invalid promo code.';
+                promoStatus.className = 'form-text text-danger';
+            }
+            updateFareAndSummary();
+        }
+        
+        function calculateFare() {
+            // Reset fares
+            currentBaseFare = 0;
+            currentDistanceFee = 0;
+            currentTimeFee = 0;
+            // currentDiscount is handled by applyPromoCode
+            currentTaxes = 0;
+            currentTotalFare = 0;
+
+            if (!rideType || !destination) {
+                updateLiveSummary(); // Update summary to show defaults or "Not selected"
+                return;
+            }
+
+            // Simulate base fare based on ride type
+            switch (rideType) {
+                case 'cab': currentBaseFare = sharingOption === 'shared' ? 90 : 120; break;
+                case 'shuttle': currentBaseFare = 50; break;
+                case 'erickshaw': currentBaseFare = 30; break;
+            }
+
+            // Simulate distance and time fees (very basic)
+            // A real app would use mapping APIs or more complex calculations
+            const estimatedDistanceKm = Math.max(5, Math.random() * 20); // Random distance between 5-20 km
+            currentDistanceFee = estimatedDistanceKm * (rideType === 'cab' ? 10 : (rideType === 'shuttle' ? 5 : 4)); // Rate per km
+            currentTimeFee = Math.max(10, Math.random() * 30); // Random time fee
+
+            let subtotal = currentBaseFare + currentDistanceFee + currentTimeFee;
+            
+            // Apply promo code discount (re-evaluate in case base fare changed)
+            if (promoCodeApplied === 'FIRSTRIDE') currentDiscount = Math.min(subtotal, 150);
+            else if (promoCodeApplied === 'WEEKEND25') currentDiscount = Math.min(subtotal * 0.25, 100);
+            else if (promoCodeApplied === 'MONSOON20') currentDiscount = Math.min(subtotal * 0.20, 75);
+            else currentDiscount = 0;
+
+
+            subtotal -= currentDiscount;
+            currentTaxes = subtotal * 0.18; // 18% GST on subtotal after discount
+            currentTotalFare = subtotal + currentTaxes;
+
+            currentTotalFare = Math.max(0, currentTotalFare); // Ensure fare isn't negative
+
+            updateLiveSummary();
+        }
+
+        function updateFareAndSummary() {
+            calculateFare(); // This will also call updateLiveSummary
+        }
+
+        function updateLiveSummary() {
+            // Update main booking summary (right-hand side sticky one)
+            document.getElementById('summaryPickup').innerText = pickupLocation || "Park & Ride Lot";
+            document.getElementById('summaryDestination').innerText = destination || "Not selected";
+            document.getElementById('summarySchedule').innerText = scheduleType === 'scheduleLater' && scheduleDateTime ? new Date(scheduleDateTime).toLocaleString() : "Now";
+            document.getElementById('summaryRideType').innerText = rideType ? (rideType.charAt(0).toUpperCase() + rideType.slice(1) + (rideType === 'cab' && sharingOption ? ` (${sharingOption})` : '')) : "Not selected";
+            document.getElementById('summaryPayment').innerText = paymentMethod ? (paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)) : "Not selected";
+
+            document.getElementById('summaryBaseFare').innerText = `₹${currentBaseFare.toFixed(2)}`;
+            const summaryDiscountEl = document.getElementById('summaryDiscount');
+            summaryDiscountEl.innerText = `-₹${currentDiscount.toFixed(2)}`;
+            if(currentDiscount > 0) summaryDiscountEl.parentElement.classList.remove('d-none'); else summaryDiscountEl.parentElement.classList.add('d-none');
+            
+            document.getElementById('summaryTaxes').innerText = `₹${currentTaxes.toFixed(2)}`;
+            document.getElementById('summaryTotal').innerText = `₹${currentTotalFare.toFixed(2)}`;
+
+            // Update modal fare details
+            document.getElementById('modalBaseFare').innerText = `₹${currentBaseFare.toFixed(2)}`;
+            document.getElementById('modalDistanceFee').innerText = `₹${currentDistanceFee.toFixed(2)}`;
+            document.getElementById('modalTimeFee').innerText = `₹${currentTimeFee.toFixed(2)}`;
+            document.getElementById('modalDiscount').innerText = `-₹${currentDiscount.toFixed(2)}`;
+            document.getElementById('modalTaxes').innerText = `₹${currentTaxes.toFixed(2)}`;
+            document.getElementById('modalTotal').innerText = `₹${currentTotalFare.toFixed(2)}`;
+        }
+        
+        function bookRide() {
+            // Validate essential fields
+            if (!destination) { alert("Please select a destination."); return; }
+            if (!rideType) { alert("Please select a ride type."); return; }
+            if (rideType === 'cab' && !sharingOption) { alert("Please select a cab sharing option."); return; }
+            if (!paymentMethod) { alert("Please select a payment method."); return; }
+            if (scheduleType === 'scheduleLater' && !document.getElementById('scheduleDateTime').value) {
+                alert("Please select a date and time for your scheduled ride."); return;
+            }
+            
+            scheduleDateTime = document.getElementById('scheduleDateTime').value; // Ensure it's current
+
+            const bookingDetails = {
+                pickupLocation: pickupLocation,
+                destination: destination,
+                scheduleType: scheduleType,
+                scheduleDateTime: scheduleType === 'scheduleLater' ? scheduleDateTime : new Date().toISOString(),
+                passengerCount: passengerCount,
+                rideType: rideType,
+                sharingOption: rideType === 'cab' ? sharingOption : null,
+                paymentMethod: paymentMethod,
+                promoCode: promoCodeApplied,
+                fareDetails: {
+                    baseFare: currentBaseFare,
+                    distanceFee: currentDistanceFee,
+                    timeFee: currentTimeFee,
+                    discount: currentDiscount,
+                    taxes: currentTaxes,
+                    total: currentTotalFare
+                },
+                bookedAt: new Date().toISOString()
+            };
+
+            console.log("Booking Ride with details:", bookingDetails);
+
+            // --- Store in localStorage (for my-rides.html) ---
+            let rideHistory = JSON.parse(localStorage.getItem('rideHistory')) || [];
+            // Add a unique ID and status for the new ride
+            const newRideEntry = { 
+                ...bookingDetails, 
+                id: 'ride_' + Date.now(), // Simple unique ID
+                status: 'upcoming' // Or 'ongoing' if scheduleType is 'now'
+            };
+            rideHistory.unshift(newRideEntry); // Add to the beginning of the array
+            localStorage.setItem('rideHistory', JSON.stringify(rideHistory));
+            // --- End localStorage ---
+
+
+            // Simulate API call and show confirmation
+            // In a real app, this would be an AJAX request.
+            document.getElementById('bookingSummaryPickup').innerText = bookingDetails.pickupLocation;
+            document.getElementById('bookingSummaryDestination').innerText = bookingDetails.destination;
+            // Simulate driver assignment
+            const drivers = ["Rajesh K.", "Priya S.", "Vijay M.", "Anita D."];
+            const assignedDriver = drivers[Math.floor(Math.random() * drivers.length)];
+            document.getElementById('driverName').innerText = `${assignedDriver} is on the way!`;
+            document.getElementById('driverArrivalTime').innerText = `${Math.floor(Math.random() * 5) + 2}-${Math.floor(Math.random() * 5) + 7}`; // e.g., 2-7 min
+
+            var rideBookedModal = new bootstrap.Modal(document.getElementById('rideBookedModal'));
+            rideBookedModal.show();
+
+            // Optional: Clear form or redirect
+            // rideBookingForm.reset(); // This might be too aggressive, clear manually if needed
+        }
+
+        // Make functions globally accessible if called by inline HTML event attributes
+        window.selectDestination = selectDestination;
+        window.selectRideType = selectRideType;
+        window.selectSharingOption = selectSharingOption;
+        window.selectPaymentMethod = selectPaymentMethod;
+        window.applyPromoCode = applyPromoCode;
+        window.bookRide = bookRide;
+        window.applyPromoCodeFromModal = applyPromoCodeFromModal;
+        window.selectPromoCodeInModal = selectPromoCodeInModal;
+
     </script>
 </body>
-</html> 
+</html>

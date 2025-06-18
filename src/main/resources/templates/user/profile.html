@@ -7,242 +7,635 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #ffc107;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --border-radius: 10px;
+            --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 60px; /* For desktop collapsed state */
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            transition: background-color 0.3s ease;
+            background-color: var(--light-color);
+            transition: background-color 0.3s ease, margin-left 0.3s ease; /* Added margin-left transition */
+            padding-top: 60px; /* Space for mobile top navbar */
         }
-        body.dark-mode {
-            background-color: #212529;
-            color: #f8f9fa;
-        }
-        .dark-mode .card {
-            background-color: #343a40;
-            color: #f8f9fa;
-        }
-        .dark-mode .sidebar {
-            background-color: #343a40;
-        }
-        .dark-mode .sidebar .nav-link {
-            color: #f8f9fa;
-        }
-        .dark-mode .table {
-            color: #f8f9fa;
-        }
-        .dark-mode .card-header {
-            background-color: #0d6efd !important;
-        }
-        .dark-mode .profile-info {
-            background-color: #343a40;
-        }
-        .dark-mode .info-label {
-            color: #adb5bd;
-        }
-        .dark-mode .btn-outline-primary {
-            color: #6ea8fe;
-            border-color: #6ea8fe;
-        }
-        .dark-mode .btn-outline-danger {
-            color: #ea868f;
-            border-color: #ea868f;
-        }
+
+        /* Unified Sidebar CSS (from my-rides.html) */
         .sidebar {
+            height: 100vh;
             position: fixed;
             top: 0;
-            bottom: 0;
             left: 0;
-            z-index: 100;
-            padding: 48px 0 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            width: var(--sidebar-width);
+            z-index: 1030; /* Higher than mobile navbar */
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, width 0.3s ease;
             background-color: #ffffff;
+            transform: translateX(calc(-1 * var(--sidebar-width))); /* Hidden by default on mobile */
         }
+
+        .sidebar.show { /* For mobile: when Bootstrap toggles it */
+            transform: translateX(0);
+        }
+        
+        body.sidebar-open .sidebar { /* Alternative for JS control on mobile if needed, or for overlay effect */
+             transform: translateX(0);
+        }
+
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: 100%;
+            padding-top: 1rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+            padding-left: 1rem; /* Default padding */
+            padding-right: 1rem; /* Default padding */
+            padding-bottom: 1rem; /* Default padding */
+            /* margin-left is handled by JS/CSS based on sidebar state */
+        }
+        
+        .sidebar-brand-logo {
+            padding-left: 1rem;
+            padding-right: 1rem; /* Ensure padding for toggler */
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* For logo and toggler */
+        }
+        .sidebar-brand-logo .brand-text-icon {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+         .sidebar-brand-logo .brand-text-icon .fs-4.fw-bold { /* Brand text */
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .desktop-sidebar-toggle {
+            cursor: pointer;
+            padding: 0.5rem;
+            display: none; /* Hidden on mobile */
+            color: var(--secondary-color);
+        }
+        .desktop-sidebar-toggle:hover {
+            color: var(--primary-color);
+        }
+
+
+        .sidebar-user-info {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin-bottom: 1rem;
+            text-align: center; /* Center user info */
+        }
+        .sidebar-user-info h6 { /* User name */
+            margin-bottom: 0.25rem;
+            /* white-space: nowrap; removed */
+            /* overflow: hidden; removed */
+            /* text-overflow: ellipsis; removed */
+        }
+        .sidebar-user-info .text-muted { /* Email and Points base */
+            margin-bottom: 0.25rem;
+            /* font-size: 0.85em; removed */
+            /* white-space: nowrap; removed */
+            /* overflow: hidden; removed */
+            /* text-overflow: ellipsis; removed */
+        }
+        .sidebar-user-info .user-points,
+        .sidebar-user-info .user-subscription {
+            font-size: 0.9em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-user-info .user-subscription .badge {
+             font-size: 0.8em;
+        }
+        .sidebar-user-info .user-details-text { /* Class for text elements that hide */
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+        }
+         .sidebar-user-info .fa-user-circle { /* User icon */
+            transition: transform 0.3s ease;
+        }
+
+
         .sidebar .nav-link {
             font-weight: 500;
             color: #333;
             padding: 0.75rem 1.5rem;
+            display: flex; /* For icon and text alignment */
+            align-items: center;
+            white-space: nowrap; /* Prevent text wrapping */
         }
         .sidebar .nav-link.active {
-            color: #0d6efd;
+            color: var(--primary-color);
+            background-color: transparent; /* Remove background highlight */
+            border-left: none; /* Remove border highlight */
+            padding-left: 1.5rem; /* Reset padding */
+        }
+        .sidebar .nav-link.active .nav-link-text {
+            color: var(--primary-color); /* Only text is highlighted */
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #80baff;
+            background-color: transparent;
+            border-left: none;
+            padding-left: 1.5rem;
+        }
+        .dark-mode .sidebar .nav-link.active .nav-link-text {
+            color: #80baff;
         }
         .sidebar .nav-link:hover {
-            color: #0d6efd;
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.05);
         }
         .sidebar .nav-link i {
             margin-right: 10px;
-        }
-        .content-wrapper {
-            margin-left: 250px;
-            padding: 20px;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                top: 5rem;
-            }
-            .content-wrapper {
-                margin-left: 0;
-            }
-        }
-        .user-credits {
-            background-color: #198754;
-            color: white;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 5px;
-        }
-        .theme-toggle {
-            cursor: pointer;
-        }
-        .profile-header {
+            width: 20px; /* Fixed width for icons */
             text-align: center;
-            margin-bottom: 30px;
         }
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 0 auto;
+        .sidebar .nav-link .nav-link-text { /* Span around nav link text */
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            margin-top: auto;
+        }
+        .sidebar-footer .theme-toggle span,
+        .sidebar-footer .logout-link span { /* Span around theme toggle and logout text */
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+            margin-left: 0.5rem;
+        }
+        .sidebar-footer .btn, .sidebar-footer .nav-link { /* Ensure footer items also align icons */
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+         .sidebar-footer .btn i, .sidebar-footer .nav-link i {
+            margin-right: 0; /* Reset margin if only icon is shown */
+        }
+        .sidebar-footer .btn span, .sidebar-footer .nav-link span { /* Text part */
+             margin-left: 0.5rem;
+        }
+
+
+        /* Mobile-specific: Top navbar and sidebar overlay behavior */
+        .mobile-top-navbar {
+            display: flex; /* Becomes flex on mobile */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1020; /* Below sidebar overlay, above content */
+            height: 60px;
+        }
+
+        @media (max-width: 767.98px) {
+            body {
+                padding-top: 60px; /* For fixed mobile navbar */
+                margin-left: 0 !important; /* Override desktop margin */
+            }
+            .main-content {
+                margin-left: 0 !important; /* Ensure no margin from desktop */
+                padding-top: 1rem; /* Space below mobile navbar if content is directly under */
+            }
+            .sidebar {
+                transform: translateX(calc(-1 * var(--sidebar-width))); /* Hidden by default */
+                 /* padding-top: 60px; /* Space for mobile navbar if sidebar is not overlaying */
+            }
+            .sidebar.show { /* When Bootstrap toggles it (or JS via .show) */
+                transform: translateX(0);
+                width: var(--sidebar-width); /* Full width when shown */
+            }
+            /* Overlay effect for mobile: darken main content when sidebar is open */
+            body.sidebar-open::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.5);
+                z-index: 1025; /* Between sidebar and main content */
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            body.sidebar-open.sidebar-closing::before { /* Manage flicker on close */
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            body.sidebar-open .sidebar.show + ::before, /* When sidebar is shown via Bootstrap */
+            body.sidebar-open.sidebar-shown::before { /* When sidebar is shown via JS */
+                opacity: 1;
+                visibility: visible;
+            }
+            .desktop-sidebar-toggle { display: none !important; } /* Ensure desktop toggle is hidden */
+        }
+
+        /* Desktop and larger screens: Standard sidebar or collapsed */
+        @media (min-width: 768px) {
+            body { padding-top: 0; } /* No top padding needed */
+            .mobile-top-navbar { display: none !important; } /* Hide mobile navbar */
+            .sidebar {
+                transform: translateX(0); /* Visible by default */
+                /* No padding-top needed from mobile navbar */
+            }
+            .main-content {
+                margin-left: var(--sidebar-width);
+            }
+            .desktop-sidebar-toggle { display: block; } /* Show desktop toggle */
+
+            /* Collapsed sidebar styles for desktop */
+            body.sidebar-collapsed .sidebar {
+                width: var(--sidebar-width-collapsed);
+            }
+            body.sidebar-collapsed .main-content {
+                margin-left: var(--sidebar-width-collapsed);
+            }
+            body.sidebar-collapsed .sidebar .sidebar-brand-logo .fs-4.fw-bold, /* Brand text */
+            body.sidebar-collapsed .sidebar .nav-link .nav-link-text, /* Nav link text */
+            body.sidebar-collapsed .sidebar .sidebar-user-info .user-details-text, /* User name, email, points, sub */
+            body.sidebar-collapsed .sidebar .sidebar-footer .theme-toggle span, /* Theme toggle text */
+            body.sidebar-collapsed .sidebar .sidebar-footer .logout-link span { /* Logout text */
+                opacity: 0;
+                width: 0; /* Collapse width to prevent overflow */
+                overflow: hidden;
+            }
+            body.sidebar-collapsed .sidebar .sidebar-user-info .fa-user-circle {
+                transform: scale(0.8); /* Slightly shrink user icon */
+            }
+            body.sidebar-collapsed .sidebar .sidebar-brand-logo {
+                justify-content: center; /* Center icon when collapsed */
+            }
+             body.sidebar-collapsed .sidebar .sidebar-brand-logo .brand-text-icon .fa-car-side {
+                margin-right: 0 !important; /* Remove margin from car icon */
+            }
+            body.sidebar-collapsed .sidebar .nav-link i {
+                margin-right: 0; /* Remove margin from nav icons */
+            }
+            body.sidebar-collapsed .sidebar .sidebar-footer .btn i,
+            body.sidebar-collapsed .sidebar .sidebar-footer .nav-link i {
+                 margin-right: 0; /* Remove margin from footer icons */
+            }
+             body.sidebar-collapsed .sidebar .sidebar-footer .btn span, 
+             body.sidebar-collapsed .sidebar .sidebar-footer .nav-link span {
+                margin-left: 0; /* Remove margin from footer text when it's hidden */
+            }
+            body.sidebar-collapsed .desktop-sidebar-toggle i {
+                transform: rotate(180deg); /* Flip arrow */
+            }
+        }
+        /* End Unified Sidebar CSS */
+
+        /* Dark mode styles (copied from my-rides.html and adapted) */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f8f9fa;
+        }
+        /* Sidebar Dark Mode */
+        .dark-mode .sidebar {
+            background-color: var(--dark-color); /* Use CSS var */
+            border-right: 1px solid #343a40;
+        }
+        .dark-mode .sidebar .nav-link {
+            color: #adb5bd;
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #80baff; /* Lighter blue for active link */
+            background-color: transparent;
+            border-left: none;
+            padding-left: 1.5rem;
+        }
+        .dark-mode .sidebar .nav-link.active .nav-link-text {
+            color: #80baff;
+        }
+        .dark-mode .sidebar .nav-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .dark-mode .sidebar .sidebar-brand-logo .text-dark,
+        .dark-mode .sidebar .sidebar-user-info h6 {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .sidebar .sidebar-user-info .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .sidebar .user-subscription .badge.bg-success {
+            background-color: #1e7e34 !important; /* More specific */
+            color: #ffffff;
+        }
+        .dark-mode .sidebar .user-points {
+            color: var(--accent-color) !important; /* Use CSS var */
+        }
+        .dark-mode .sidebar hr {
+            border-top-color: #444;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary {
+             color: #adb5bd;
+             border-color: #adb5bd;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary:hover {
+            color: var(--dark-color); /* Use CSS var */
+            background-color: #adb5bd;
+        }
+        .dark-mode .desktop-sidebar-toggle {
+            color: #adb5bd;
+        }
+        .dark-mode .desktop-sidebar-toggle:hover {
+            color: #80baff;
+        }
+        /* Mobile top navbar dark mode */
+        .dark-mode .mobile-top-navbar.bg-light {
+            background-color: var(--dark-color) !important;
+            border-bottom: 1px solid #343a40;
+        }
+        .dark-mode .mobile-top-navbar .navbar-brand .text-dark {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .mobile-top-navbar .navbar-toggler-icon {
+             filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        /* End Sidebar Dark Mode */
+
+
+        /* General Dark Mode for page content (profile.html specific) */
+        .dark-mode .card {
+            background-color: #2c3034;
+            color: #f8f9fa;
+            border-color: #444;
+        }
+        .dark-mode .table { /* If tables are used */
+            color: #f8f9fa;
+        }
+        .dark-mode .profile-image {
+            background-color: #343a40;
+            color: #80baff;
+        }
+        .dark-mode .vehicle-badge {
+            background-color: #80baff;
+            color: var(--dark-color);
+        }
+        .dark-mode .profile-info {
+            background-color: #2c3034; /* Match card */
+            border: 1px solid #444; /* Add border if not in a card */
+            border-radius: var(--border-radius);
+        }
+        .dark-mode .profile-info-row {
+            border-bottom-color: #444;
+        }
+        .dark-mode .info-label {
+            color: #adb5bd;
+        }
+        .dark-mode .credit-box {
+            background-color: #1a6842; /* Darker green */
+        }
+        .dark-mode .btn-outline-primary {
+            color: #80baff;
+            border-color: #80baff;
+        }
+        .dark-mode .btn-outline-primary:hover {
+            background-color: #80baff;
+            color: var(--dark-color);
+        }
+        .dark-mode .btn-outline-danger {
+            color: #f08080; /* Lighter red */
+            border-color: #f08080;
+        }
+        .dark-mode .btn-outline-danger:hover {
+            background-color: #f08080;
+            color: var(--dark-color);
+        }
+        .dark-mode .text-dark { /* General catch-all */
+            color: #f8f9fa !important;
+        }
+        .dark-mode .text-muted { /* General catch-all */
+            color: #adb5bd !important;
+        }
+        .dark-mode .border-bottom {
+            border-bottom-color: #444 !important;
+        }
+        .dark-mode .form-control {
+            background-color: var(--dark-color);
+            color: #f8f9fa;
+            border-color: #444;
+        }
+        .dark-mode .form-control::placeholder {
+            color: #6c757d;
+        }
+        .dark-mode .form-text {
+            color: #adb5bd;
+        }
+        .dark-mode .bg-light { /* For elements like card-footer if they use bg-light */
+            background-color: #2c3034 !important;
+        }
+        .dark-mode .alert-success {
+            background-color: #104428;
+            color: #c3e6cb;
+            border-color: #1a5332;
+        }
+        .dark-mode .alert-danger {
+            background-color: #58151c;
+            color: #f5c6cb;
+            border-color: #6c232c;
+        }
+        .dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        /* End General Dark Mode */
+
+        /* Profile page specific styles (remains largely the same) */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
             background-color: #e9ecef;
-            font-size: 75px;
-            color: #0d6efd;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+        }
+        .vehicle-badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: .75em;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25rem;
+            background-color: var(--primary-color);
         }
         .profile-info {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
         }
         .profile-info-row {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #dee2e6;
         }
         .profile-info-row:last-child {
             border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
         }
         .info-label {
-            font-weight: bold;
-            color: #6c757d;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .info-value {
-            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary-color);
         }
         .credit-box {
-            background-color: #198754;
+            background-color: #198754; /* Bootstrap success green */
             color: white;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
             text-align: center;
-            margin-top: 20px;
+            margin-bottom: 2rem;
         }
         .credit-amount {
-            font-size: 48px;
+            font-size: 2.5rem;
             font-weight: bold;
         }
-        .vehicle-badge {
-            background-color: #0d6efd;
-            color: white;
-            border-radius: 5px;
-            padding: 5px 10px;
-            font-weight: bold;
-            font-size: 16px;
-            display: inline-block;
+        /* Ensure main content has enough bottom padding for footer content if any */
+        .main-content {
+            padding-bottom: 3rem; /* Adjust as needed */
         }
+        /* Adjustments for the account balance card from original profile page */
+        .card-header.bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        .dark-mode .card-header.bg-primary {
+            background-color: #0056b3 !important; /* Darker primary for header in dark mode */
+        }
+        .dark-mode .text-success { color: #28a745 !important; }
+        .dark-mode .text-warning { color: #ffc107 !important; }
+
     </style>
 </head>
 <body>
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-light bg-white fixed-top shadow-sm d-md-none">
+    <!-- Mobile Top Navbar (Copied from my-rides.html) -->
+    <nav class="navbar navbar-light bg-light fixed-top shadow-sm mobile-top-navbar d-md-none">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/" th:href="@{/}">
                 <i class="fas fa-car-side text-primary me-2"></i>
-                Park & Ride
+                <span class="text-dark">Park & Ride</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
     </nav>
 
-    <!-- Sidebar -->
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-        <div class="position-sticky">
-            <div class="d-none d-md-flex align-items-center justify-content-center p-3 mb-3">
-                <a class="navbar-brand fw-bold" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                    <i class="fas fa-car-side text-primary me-2"></i>
-                    Park & Ride
+    <!-- Sidebar (Structure from my-rides.html, nav links adapted for profile.html) -->
+    <nav id="sidebarMenu" class="d-md-block sidebar collapse"> <!-- Ensure 'collapse' for Bootstrap JS -->
+        <div class="position-sticky pt-3 sidebar-sticky">
+
+            <div class="sidebar-brand-logo"> <!-- Flex container for logo -->
+                <a href="/" th:href="@{/}" class="brand-text-icon text-dark text-decoration-none">
+                    <i class="fas fa-car-side text-primary me-2 fa-2x"></i>
+                    <span class="fs-4 fw-bold">Park & Ride</span>
                 </a>
+                <!-- Desktop sidebar toggler removed -->
             </div>
-            <div class="text-center mb-4">
+
+            <!-- User Info Block -->
+            <div th:if="${user != null}" class="text-center mb-4 sidebar-user-info">
                 <div class="mb-3">
                     <i class="fas fa-user-circle fa-4x text-primary"></i>
                 </div>
-                <h6 th:text="${user.firstName + ' ' + user.lastName}">User Name</h6>
-                <small class="text-muted d-block" th:text="${user.email}">user@example.com</small>
-                <div class="user-rewards mt-2">
-                    <span class="badge bg-warning text-dark">
-                        <i class="fas fa-gift me-1"></i>
-                        <span th:text="${user.rewardPoints}">0</span> Points
-                    </span>
+                <h6 th:text="${user.firstName + ' ' + user.lastName}">Test User</h6>
+                <small class="text-muted d-block" th:text="${user.email}">test@parkandride.com</small>
+                <small class="text-muted d-block user-points"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</small>
+                <div class="mt-2 user-subscription" th:if="${user.hasActiveSubscription()}">
+                    <span class="badge bg-success" th:text="${user.subscriptionType != null ? user.subscriptionType.displayName : 'Active Subscription'}">Active Subscription</span>
+                </div>
+                 <div class="mt-2 user-subscription" th:unless="${user.hasActiveSubscription()}" style="min-height: 24px;">
                 </div>
             </div>
+            <hr th:if="${user != null}" class="mx-3 my-2">
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
+                    <a class="nav-link text-dark" href="/dashboard" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/parking/my-reservations" th:href="@{/parking/my-reservations}">
-                        <i class="fas fa-ticket-alt"></i>
-                        My Reservations
+                    <a class="nav-link text-dark" href="/parking/my-reservations" th:href="@{/parking/my-reservations}">
+                        <i class="fas fa-ticket-alt me-2"></i>My Reservations
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/subscriptions" th:href="@{/user/subscriptions}">
-                        <i class="fas fa-crown"></i>
-                        Subscriptions
+                    <a class="nav-link text-dark" href="/user/subscriptions" th:href="@{/user/subscriptions}">
+                        <i class="fas fa-calendar-check me-2"></i>Subscriptions
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/rewards" th:href="@{/user/rewards}">
-                        <i class="fas fa-gift"></i>
-                        Rewards
+                    <a class="nav-link text-dark" href="/user/rewards" th:href="@{/user/rewards}">
+                        <i class="fas fa-gift me-2"></i>Rewards
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/rides/last-mile" th:href="@{/rides/last-mile}">
-                        <i class="fas fa-shuttle-van"></i>
-                        Last-Mile Rides
+                    <a class="nav-link text-dark" href="/rides/last-mile" th:href="@{/rides/last-mile}">
+                        <i class="fas fa-shuttle-van me-2"></i>Last-Mile Rides
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/user/profile" th:href="@{/user/profile}">
-                        <i class="fas fa-user-cog"></i>
-                        Profile
+                    <a class="nav-link text-dark" href="/rides/my-rides" th:href="@{/rides/my-rides}">
+                        <i class="fas fa-history me-2"></i>My Rides
                     </a>
                 </li>
-                <li class="nav-item mt-5">
-                    <a class="nav-link text-danger" href="/logout" th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                <li class="nav-item">
+                    <a class="nav-link active text-primary" href="/user/profile" th:href="@{/user/profile}">
+                        <i class="fas fa-user-cog me-2"></i>Profile
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <hr class="mx-3 my-2">
+                <button id="themeToggleSidebar" class="btn btn-sm btn-outline-secondary theme-toggle w-100 mb-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-moon me-2"></i> 
+                    <span>Dark Mode</span> 
+                </button>
+                <hr class="mx-3 my-2">
+                <a class="nav-link text-dark d-flex align-items-center justify-content-center logout-link" href="/logout" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i><span>Logout</span>
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="content-wrapper">
+    <div class="main-content p-md-4"> <!-- Adjusted padding for desktop -->
         <!-- Alerts -->
         <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
             <span th:text="${successMessage}"></span>
@@ -256,13 +649,7 @@
         <!-- Profile Header -->
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">My Profile</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-                <div class="btn-group me-2">
-                    <button id="themeToggle" class="btn btn-sm btn-outline-secondary theme-toggle">
-                        <i class="fas fa-moon"></i> Dark Mode
-                    </button>
-                </div>
-            </div>
+            <!-- Theme toggle removed from here -->
         </div>
 
         <!-- Profile Content -->
@@ -354,35 +741,124 @@
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('themeToggle');
+            const themeToggle = document.getElementById('themeToggleSidebar'); // Changed ID here
             const body = document.body;
-            
-            // Check for stored preference and apply it
-            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-            if (darkModeEnabled) {
-                body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            const sidebar = document.getElementById('sidebarMenu');
+            const mainContent = document.querySelector('.main-content');
+            const mobileNavbarToggler = document.querySelector('.navbar-toggler'); // For Bootstrap's collapse
+            const desktopSidebarToggler = document.getElementById('desktopSidebarToggler');
+
+            // Theme Toggle Functionality (from my-rides.html)
+            if (themeToggle) {
+                const themeToggleIcon = themeToggle.querySelector('i');
+                const themeToggleText = themeToggle.querySelector('span');
+
+                function applyTheme(isDark) {
+                    body.classList.toggle('dark-mode', isDark);
+                    if (isDark) {
+                        themeToggleIcon.classList.remove('fa-moon');
+                        themeToggleIcon.classList.add('fa-sun');
+                        themeToggleText.textContent = 'Light Mode';
+                    } else {
+                        themeToggleIcon.classList.remove('fa-sun');
+                        themeToggleIcon.classList.add('fa-moon');
+                        themeToggleText.textContent = 'Dark Mode';
+                    }
+                    localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+                }
+
+                const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+                applyTheme(darkModeEnabled);
+
+                themeToggle.addEventListener('click', function() {
+                    applyTheme(!body.classList.contains('dark-mode'));
+                });
+            }
+
+            // Unified Sidebar Interaction (Mobile Overlay & Desktop Collapse)
+            const sidebarInstance = sidebar ? new bootstrap.Collapse(sidebar, { toggle: false }) : null;
+
+            // Mobile: Handle Bootstrap's events for overlay
+            if (sidebar && mobileNavbarToggler) {
+                sidebar.addEventListener('show.bs.collapse', function () {
+                    body.classList.add('sidebar-open', 'sidebar-shown');
+                    body.classList.remove('sidebar-closing');
+                });
+                sidebar.addEventListener('hide.bs.collapse', function () {
+                    body.classList.add('sidebar-closing');
+                });
+                sidebar.addEventListener('hidden.bs.collapse', function () {
+                    body.classList.remove('sidebar-open', 'sidebar-shown', 'sidebar-closing');
+                });
             }
             
-            themeToggle.addEventListener('click', function() {
-                body.classList.toggle('dark-mode');
+            // Mobile: Close sidebar on nav link click
+            const navLinks = sidebar ? sidebar.querySelectorAll('.nav-link') : [];
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768 && sidebar && sidebar.classList.contains('show')) {
+                         if (sidebarInstance) sidebarInstance.hide();
+                    }
+                });
+            });
+
+
+            // Desktop: Toggle collapsed state
+            if (desktopSidebarToggler) {
+                function applyDesktopSidebarState(isCollapsed) {
+                    body.classList.toggle('sidebar-collapsed', isCollapsed);
+                    localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+                }
+
+                const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                if (window.innerWidth >= 768) { // Only apply on desktop
+                    applyDesktopSidebarState(sidebarCollapsed);
+                }
                 
-                const isDarkMode = body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDarkMode);
-                
-                if (isDarkMode) {
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                desktopSidebarToggler.addEventListener('click', function() {
+                    applyDesktopSidebarState(!body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            
+            // Adjust sidebar state on resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth < 768) {
+                    // Mobile: remove desktop collapsed state, ensure Bootstrap handles show/hide
+                    body.classList.remove('sidebar-collapsed');
+                    // If sidebar was open due to desktop state, ensure it's properly managed by Bootstrap collapse
+                    if (sidebar && !sidebar.classList.contains('show') && !sidebar.classList.contains('collapsing')) {
+                        // If it wasn't explicitly shown by mobile toggle, ensure it's hidden
+                    }
                 } else {
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                    // Desktop: re-apply stored collapsed state, remove mobile overlay classes
+                    body.classList.remove('sidebar-open', 'sidebar-shown', 'sidebar-closing');
+                    if (sidebarInstance && sidebar.classList.contains('show')) { // if mobile menu was open
+                        sidebarInstance.hide(); // Hide it first
+                    }
+                    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                    applyDesktopSidebarState(sidebarCollapsed);
                 }
             });
+
+            // Initial check on load for desktop
+            if (window.innerWidth >= 768) {
+                const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                applyDesktopSidebarState(sidebarCollapsed);
+                 if (sidebarInstance && sidebar.classList.contains('show')) { // if mobile menu was open due to browser back or refresh
+                    sidebarInstance.hide(); 
+                }
+                 body.classList.remove('sidebar-open', 'sidebar-shown', 'sidebar-closing');
+            } else {
+                 // On mobile, ensure sidebar-collapsed is not applied from a previous desktop session
+                 body.classList.remove('sidebar-collapsed');
+            }
+
         });
     </script>
 </body>
-</html> 
+</html>

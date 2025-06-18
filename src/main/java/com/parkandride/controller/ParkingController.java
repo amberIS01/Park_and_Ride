@@ -46,6 +46,14 @@ public class ParkingController {
         if (spotOpt.isEmpty() || spotOpt.get().isOccupied()) {
             return "redirect:/dashboard?error=Spot not available";
         }
+
+        // Add authenticated user to the model
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+            User user = userService.findByUsername(auth.getName())
+                    .orElse(null); // Handle case where user might not be found, though unlikely if authenticated
+            model.addAttribute("user", user);
+        }
         
         model.addAttribute("spot", spotOpt.get());
         model.addAttribute("reservationTypes", ReservationType.values());
@@ -171,4 +179,4 @@ public class ParkingController {
         
         return "dashboard";
     }
-} 
+}

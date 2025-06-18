@@ -28,25 +28,74 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 250px;
+            width: 250px; /* Standardized width */
             z-index: 100;
-            padding-top: 20px;
+            /* padding-top: 20px; Removed to allow sidebar-sticky to manage all padding */
             box-shadow: var(--box-shadow);
             transition: all 0.3s;
+            background-color: #ffffff; /* Ensure light mode background */
         }
         
         .sidebar-sticky {
-            position: relative;
+            position: relative; /* Changed from sticky as parent is fixed */
             top: 0;
-            height: calc(100vh - 60px);
-            padding-top: 0.5rem;
+            height: 100%; /* Fill parent */
+            padding-top: 1rem; /* Add some top padding */
             overflow-x: hidden;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         
         .main-content {
             margin-left: 250px;
             transition: all 0.3s;
+        }
+
+        .sidebar-brand-logo {
+            padding-left: 1rem; /* ps-3 */
+            margin-bottom: 1rem; /* mb-3 */
+        }
+
+        .sidebar-user-info {
+            padding-left: 1rem; /* px-3 */
+            padding-right: 1rem; /* px-3 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .sidebar-user-info h6 {
+            margin-bottom: 0.25rem; /* mb-1 */
+        }
+        .sidebar-user-info .text-muted {
+            margin-bottom: 0.25rem; /* mb-1 */
+        }
+        .sidebar-user-info .user-points {
+            font-size: 0.9em;
+        }
+        .sidebar-user-info .badge {
+            font-size: 0.8em;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #333; /* Standard text color for links */
+            padding: 0.75rem 1.5rem;
+        }
+        .sidebar .nav-link.active {
+            color: #0d6efd; /* Primary color for active link */
+        }
+        .sidebar .nav-link:hover {
+            color: #0d6efd;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px; /* Space for icons */
+        }
+
+        .sidebar-footer {
+            padding: 1rem; /* p-3 */
+            margin-top: auto; /* Pushes to bottom in flex column */
+        }
+        .sidebar-footer .theme-toggle span {
+            margin-left: 0.5rem;
         }
         
         @media (max-width: 767.98px) {
@@ -132,7 +181,35 @@
             color: #f8f9fa;
         }
         
-        .dark-mode .sidebar,
+        .dark-mode .sidebar {
+            background-color: #212529; /* Darker sidebar background */
+            border-right: 1px solid #343a40; /* Subtle border */
+        }
+        .dark-mode .sidebar .nav-link {
+            color: #adb5bd; /* Lighter text for dark mode nav links */
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #6ea8fe; /* Adjusted active color for dark mode */
+        }
+        .dark-mode .sidebar .nav-link:hover {
+            color: #ffffff;
+        }
+        .dark-mode .sidebar .sidebar-brand-logo .text-dark,
+        .dark-mode .sidebar .sidebar-user-info h6 {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .sidebar .sidebar-user-info .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .sidebar .user-subscription .badge.bg-success { background-color: #1e7e34; color: #ffffff; }
+        .dark-mode .sidebar .user-rewards .badge.bg-warning.text-dark, /* Already had this for points */
+        .dark-mode .sidebar .user-points { /* Ensure points text is also styled */
+            color: #ffc107 !important; 
+        }
+        .dark-mode .sidebar hr {
+            border-top-color: #444;
+        }
+
         .dark-mode .card,
         .dark-mode .list-group-item,
         .dark-mode .form-control,
@@ -147,7 +224,7 @@
         }
         
         .dark-mode .text-dark,
-        .dark-mode .nav-link.text-dark {
+        .dark-mode .nav-link.text-dark { /* Catch all .text-dark that might be missed */
             color: #f8f9fa !important;
         }
         
@@ -160,7 +237,7 @@
             color: #adb5bd;
         }
         
-        .dark-mode .btn-outline-dark {
+        .dark-mode .btn-outline-dark { /* General outline dark button */
             color: #f8f9fa;
             border-color: #f8f9fa;
         }
@@ -169,61 +246,106 @@
             background-color: #f8f9fa;
             color: #212529;
         }
+        .dark-mode .sidebar-footer .btn-outline-secondary { /* Specific for theme toggle */
+             color: #adb5bd;
+             border-color: #adb5bd;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary:hover {
+            color: #212529;
+            background-color: #adb5bd;
+        }
         
-        .dark-mode .text-muted {
+        .dark-mode .text-muted { /* General text-muted */
             color: #adb5bd !important;
         }
+
+        /* Added Dark mode for user info block - these are now more specific if needed */
+        /* body.dark-mode .sidebar .text-center h6 { color: #f8f9fa; } */ /* Covered by .sidebar-user-info h6 */
+        /* body.dark-mode .sidebar .text-center .fa-user-circle.text-primary { color: #4dabf7 !important; } */ /* Icon removed from this version */
+        /* body.dark-mode .sidebar .user-subscription .badge.bg-success { background-color: #1e7e34; color: #ffffff; } */ /* Covered */
+        /* body.dark-mode .sidebar .user-rewards .badge.bg-warning.text-dark { background-color: #ffc107; color: #212529 !important; } */ /* Covered */
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar bg-white">
-        <div class="d-flex flex-column flex-shrink-0 p-3">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                <i class="fas fa-car-side text-primary me-2"></i>
-                <span class="fs-4 fw-bold">Park & Ride</span>
-            </a>
-            <hr>
+    <nav id="sidebarMenu" class="d-md-block sidebar collapse">
+        <div class="position-sticky pt-3 sidebar-sticky"> <!-- Made flex column by CSS -->
+            
+            <!-- Park & Ride Brand -->
+            <div class="sidebar-brand-logo d-flex align-items-center">
+                <a href="/" th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
+                    <i class="fas fa-car-side text-primary me-2 fa-2x"></i>
+                    <span class="fs-4 fw-bold">Park & Ride</span>
+                </a>
+            </div>
+
+            <!-- User Info Block -->
+            <div th:if="${user != null}" class="text-center mb-4 sidebar-user-info">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-4x text-primary"></i>
+                </div>
+                <h6 th:text="${user.firstName + ' ' + user.lastName}">User Name</h6>
+                <small class="text-muted d-block" th:text="${user.email}">user@example.com</small>
+                <small class="text-muted d-block user-points"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</small>
+                <div class="mt-2 user-subscription" th:if="${user.hasActiveSubscription()}">
+                     <span class="badge bg-success">Active Subscription</span>
+                </div>
+                 <div class="mt-2 user-subscription" th:unless="${user.hasActiveSubscription()}" style="min-height: 24px;"> <!-- Placeholder for consistency if no subscription -->
+                </div>
+            </div>
+            <hr th:if="${user != null}" class="mx-3 my-2">
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="/dashboard" th:href="@{/dashboard}" class="nav-link text-dark">
-                        <i class="fas fa-tachometer-alt me-2"></i>
-                        Dashboard
+                    <a class="nav-link text-dark" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/parking/my-reservations" th:href="@{/parking/my-reservations}" class="nav-link text-dark">
-                        <i class="fas fa-ticket-alt me-2"></i>
-                        My Reservations
+                    <a class="nav-link text-dark" th:href="@{/parking/my-reservations}">
+                        <i class="fas fa-ticket-alt me-2"></i>My Reservations
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/rides/last-mile" th:href="@{/rides/last-mile}" class="nav-link text-dark">
-                        <i class="fas fa-shuttle-van me-2"></i>
-                        Last-Mile Rides
+                    <a class="nav-link text-dark" th:href="@{/user/subscriptions}">
+                        <i class="fas fa-calendar-check me-2"></i>Subscriptions
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/rides/my-rides" th:href="@{/rides/my-rides}" class="nav-link active text-primary">
-                        <i class="fas fa-history me-2"></i>
-                        My Rides
+                    <a class="nav-link text-dark" th:href="@{/user/rewards}">
+                        <i class="fas fa-gift me-2"></i>Rewards
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/user/profile" th:href="@{/user/profile}" class="nav-link text-dark">
-                        <i class="fas fa-user-cog me-2"></i>
-                        Profile
+                    <a class="nav-link text-dark" th:href="@{/rides/last-mile}">
+                        <i class="fas fa-shuttle-van me-2"></i>Last-Mile Rides
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/logout" th:href="@{/logout}" class="nav-link text-dark">
-                        <i class="fas fa-sign-out-alt me-2"></i>
-                        Logout
+                    <a class="nav-link active text-primary" th:href="@{/rides/my-rides}">
+                        <i class="fas fa-history me-2"></i>My Rides
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/user/profile}">
+                        <i class="fas fa-user-cog me-2"></i>Profile
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <hr class="mx-3 my-2">
+                <button id="themeToggle" class="btn btn-sm btn-outline-secondary theme-toggle w-100 mb-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-moon me-2"></i> <!-- Icon updated by JS -->
+                    <span>Dark Mode</span> <!-- Text updated by JS -->
+                </button>
+                <hr class="mx-3 my-2">
+                <a class="nav-link text-dark d-flex align-items-center justify-content-center" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
         </div>
-    </div>
+    </nav>
 
     <!-- Main Content -->
     <div class="main-content p-4 pb-5">
@@ -298,42 +420,35 @@
     <script>
         // Global variable to store the loadRideHistory function for access from cancelRide
         let globalLoadRideHistory;
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
             const body = document.body;
-            
+            const themeToggleIcon = themeToggle.querySelector('i');
+            const themeToggleText = themeToggle.querySelector('span');
+
+            function applyTheme(isDark) {
+                body.classList.toggle('dark-mode', isDark);
+                if (isDark) {
+                    themeToggleIcon.classList.remove('fa-moon');
+                    themeToggleIcon.classList.add('fa-sun');
+                    themeToggleText.textContent = 'Light Mode';
+                } else {
+                    themeToggleIcon.classList.remove('fa-sun');
+                    themeToggleIcon.classList.add('fa-moon');
+                    themeToggleText.textContent = 'Dark Mode';
+                }
+                localStorage.setItem('darkMode', isDark);
+            }
+
             // Check for stored preference and apply it
             const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-            if (darkModeEnabled) {
-                body.classList.add('dark-mode');
-            }
+            applyTheme(darkModeEnabled);
             
-            // Add button for dark mode toggle
-            const header = document.querySelector('.d-flex.justify-content-between.align-items-center.mb-4');
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'btn btn-sm btn-outline-dark me-2';
-            toggleBtn.id = 'themeToggle';
-            toggleBtn.innerHTML = darkModeEnabled ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
-            
-            // Insert before the existing button
-            const existingButton = header.querySelector('.btn.btn-primary');
-            header.insertBefore(toggleBtn, existingButton);
-            
-            // Add event listener
-            toggleBtn.addEventListener('click', function() {
-                body.classList.toggle('dark-mode');
-                
-                const isDarkMode = body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDarkMode);
-                
-                if (isDarkMode) {
-                    toggleBtn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-                } else {
-                    toggleBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-                }
+            themeToggle.addEventListener('click', function() {
+                applyTheme(!body.classList.contains('dark-mode'));
             });
-            
+
             // Load ride history from localStorage
             loadRideHistory();
             
@@ -491,56 +606,22 @@
                 
                 // Re-append cards in sorted order
                 cardsArray.forEach(card => {
-                    if (card.id !== 'noRidesMessage') {
+                    if (card.style.display !== 'none') {
                         container.appendChild(card);
                     }
                 });
             }
         });
         
-        // Function to view ride details - to be implemented
         function showRideDetails(rideId) {
-            alert('Viewing details for ride ' + rideId + ' (Feature coming soon)');
-        }
-
-        // Function to cancel a ride - now defined in global scope to be accessible from HTML
-        function cancelRide(rideId) {
-            if (confirm('Are you sure you want to cancel this ride?')) {
-                // Get ride history
-                let rideHistory = JSON.parse(localStorage.getItem('rideHistory')) || [];
-                
-                // Find the ride by ID
-                const rideIndex = rideHistory.findIndex(ride => ride.id === rideId);
-                
-                if (rideIndex !== -1) {
-                    // Update the ride status to cancelled
-                    rideHistory[rideIndex].status = 'cancelled';
-                    
-                    // Save back to localStorage
-                    localStorage.setItem('rideHistory', JSON.stringify(rideHistory));
-                    
-                    // Update the dashboard count if dashboard has been loaded in this session
-                    updateDashboardCount();
-                    
-                    // Reload the ride history
-                    if (typeof globalLoadRideHistory === 'function') {
-                        globalLoadRideHistory();
-                    } else {
-                        // Fallback - reload the page if function reference is not available
-                        window.location.reload();
-                    }
-                    
-                    // Show success message
-                    alert('Ride cancelled successfully');
-                }
-            }
+            // TODO: Implement ride details viewing
+            alert('Show details for ride ID: ' + rideId);
         }
         
-        // Function to update dashboard count
-        function updateDashboardCount() {
-            // This will be executed when user returns to dashboard
-            localStorage.setItem('ridesUpdated', 'true');
+        function cancelRide(rideId) {
+            // TODO: Implement ride cancellation
+            alert('Cancel ride with ID: ' + rideId);
         }
     </script>
 </body>
-</html> 
+</html>

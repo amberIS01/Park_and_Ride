@@ -7,243 +7,521 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #ffc107;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --border-radius: 10px;
+            --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            background-color: var(--light-color);
+            transition: background-color 0.3s ease;
         }
+        
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; /* Standardized width */
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s;
+            background-color: #ffffff; /* Ensure light mode background */
+        }
+        
+        .sidebar-sticky {
+            position: relative; 
+            top: 0;
+            height: 100%; 
+            padding-top: 1rem; 
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            transition: all 0.3s;
+            padding-top: 1.5rem; /* Added padding for main content */
+            padding-bottom: 1.5rem; /* Added padding for main content */
+        }
+
+        .sidebar-brand-logo {
+            padding-left: 1rem; 
+            margin-bottom: 1rem; 
+        }
+
+        .sidebar-user-info {
+            padding-left: 1rem; 
+            padding-right: 1rem; 
+            margin-bottom: 1rem; 
+        }
+        .sidebar-user-info h6 {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .text-muted {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .user-points {
+            font-size: 0.9em;
+        }
+        .sidebar-user-info .badge {
+            font-size: 0.8em;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #333; 
+            padding: 0.75rem 1.5rem;
+        }
+        .sidebar .nav-link.active {
+            color: #0d6efd; 
+        }
+        .sidebar .nav-link:hover {
+            color: #0d6efd;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px; 
+        }
+
+        .sidebar-footer {
+            padding: 1rem; 
+            margin-top: auto; 
+        }
+        .sidebar-footer .theme-toggle span {
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 60px;
+                transform: translateX(-200px);
+                padding-top: 60px;
+            }
+            
+            .sidebar:hover {
+                width: 250px;
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 60px;
+            }
+            
+            .sidebar .nav-link span,
+            .sidebar .navbar-brand span { /* Corrected to target sidebar brand span */
+                display: none;
+            }
+            
+            .sidebar:hover .nav-link span,
+            .sidebar:hover .navbar-brand span { /* Corrected to target sidebar brand span */
+                display: inline;
+            }
+        }
+        
+        /* Page-specific styles from original reserve.html */
         .reservation-container {
-            max-width: 800px;
+            max-width: 900px; /* Increased max-width for better layout in main content area */
             margin: 0 auto;
         }
         .spot-image {
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
         }
         .price-card {
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s;
+            cursor: pointer;
         }
         .price-card:hover, .price-card.active {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .price-card.active {
-            border-color: #0d6efd;
+            border-color: var(--primary-color);
             border-width: 2px;
         }
         .reservation-summary {
-            background-color: #f8f9fa;
-            border-radius: 10px;
+            background-color: var(--light-color); /* Use CSS var */
+            border-radius: var(--border-radius);
             padding: 20px;
+            border: 1px solid #dee2e6; /* Added a subtle border */
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f8f9fa;
+        }
+        
+        .dark-mode .sidebar {
+            background-color: #212529; 
+            border-right: 1px solid #343a40; 
+        }
+        .dark-mode .sidebar .nav-link {
+            color: #adb5bd; 
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #6ea8fe; 
+        }
+        .dark-mode .sidebar .nav-link:hover {
+            color: #ffffff;
+        }
+        .dark-mode .sidebar .sidebar-brand-logo .text-dark, /* Ensure brand text is light */
+        .dark-mode .sidebar .sidebar-user-info h6 {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .sidebar .sidebar-user-info .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .sidebar .user-subscription .badge.bg-success { background-color: #1e7e34; color: #ffffff; }
+        .dark-mode .sidebar .user-rewards .badge.bg-warning.text-dark,
+        .dark-mode .sidebar .user-points { 
+            color: #ffc107 !important; 
+        }
+        .dark-mode .sidebar hr {
+            border-top-color: #444;
+        }
+
+        .dark-mode .card,
+        .dark-mode .list-group-item,
+        .dark-mode .form-control,
+        .dark-mode .form-select,
+        .dark-mode .table-bordered td, /* Added for table cells */
+        .dark-mode .table-bordered th, /* Added for table headers */
+        .dark-mode .table { /* Added for table itself */
+            background-color: #212529;
+            color: #f8f9fa;
+            border-color: #444;
+        }
+        .dark-mode .table-bordered {
+             border-color: #444;
+        }
+        
+        .dark-mode .bg-white {
+            background-color: #212529 !important;
+        }
+        .dark-mode .bg-light { /* For elements like spot image placeholder */
+            background-color: #2c3034 !important;
+        }
+        
+        .dark-mode .text-dark,
+        .dark-mode .nav-link.text-dark { 
+            color: #f8f9fa !important;
+        }
+        
+        .dark-mode .card-footer {
+            background-color: #2c3034;
+            border-color: #444;
+        }
+        
+        .dark-mode .form-floating label {
+            color: #adb5bd;
+        }
+        
+        .dark-mode .btn-outline-dark { 
+            color: #f8f9fa;
+            border-color: #f8f9fa;
+        }
+        
+        .dark-mode .btn-outline-dark:hover {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary { 
+             color: #adb5bd;
+             border-color: #adb5bd;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary:hover {
+            color: #212529;
+            background-color: #adb5bd;
+        }
+        
+        .dark-mode .text-muted { 
+            color: #adb5bd !important;
+        }
+        .dark-mode .reservation-summary { /* Dark mode for summary box */
+            background-color: #2c3034;
+            border-color: #444;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-car-side text-primary me-2"></i>
-                Park & Ride
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/parking/my-reservations" th:href="@{/parking/my-reservations}">
-                            <i class="fas fa-ticket-alt me-1"></i> My Reservations
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user/profile" th:href="@{/user/profile}">
-                            <i class="fas fa-user-cog me-1"></i> Profile
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="/logout" th:href="@{/logout}">
-                            <i class="fas fa-sign-out-alt me-1"></i> Logout
-                        </a>
-                    </li>
-                </ul>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="d-md-block sidebar collapse">
+        <div class="position-sticky pt-3 sidebar-sticky">
+            
+            <div class="sidebar-brand-logo d-flex align-items-center">
+                <a href="/" th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
+                    <i class="fas fa-car-side text-primary me-2 fa-2x"></i>
+                    <span class="fs-4 fw-bold">Park & Ride</span>
+                </a>
+            </div>
+
+            <div th:if="${user != null}" class="text-center mb-4 sidebar-user-info">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-4x text-primary"></i>
+                </div>
+                <h6 th:text="${user.firstName + ' ' + user.lastName}">User Name</h6>
+                <small class="text-muted d-block" th:text="${user.email}">user@example.com</small>
+                <small class="text-muted d-block user-points"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</small>
+                <div class="mt-2 user-subscription" th:if="${user.hasActiveSubscription()}">
+                     <span class="badge bg-success">Active Subscription</span>
+                </div>
+                 <div class="mt-2 user-subscription" th:unless="${user.hasActiveSubscription()}" style="min-height: 24px;">
+                </div>
+            </div>
+            <hr th:if="${user != null}" class="mx-3 my-2">
+
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active text-primary" th:href="@{/parking/my-reservations}"> <!-- Made active -->
+                        <i class="fas fa-ticket-alt me-2"></i><span>My Reservations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/user/subscriptions}">
+                        <i class="fas fa-calendar-check me-2"></i><span>Subscriptions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/user/rewards}">
+                        <i class="fas fa-gift me-2"></i><span>Rewards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/rides/last-mile}">
+                        <i class="fas fa-shuttle-van me-2"></i><span>Last-Mile Rides</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/rides/my-rides}">
+                        <i class="fas fa-history me-2"></i><span>My Rides</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/user/profile}">
+                        <i class="fas fa-user-cog me-2"></i><span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <hr class="mx-3 my-2">
+                <button id="themeToggle" class="btn btn-sm btn-outline-secondary theme-toggle w-100 mb-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-moon me-2"></i> 
+                    <span>Dark Mode</span> 
+                </button>
+                <hr class="mx-3 my-2">
+                <a class="nav-link text-dark d-flex align-items-center justify-content-center" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i><span>Logout</span>
+                </a>
             </div>
         </div>
     </nav>
 
-    <div class="container py-5 reservation-container">
-        <div class="mb-4">
-            <h2><i class="fas fa-clipboard-check text-primary me-2"></i> Reserve Parking Spot</h2>
-            <p class="text-muted" th:text="'Spot ID: ' + ${spot.spotId} + ' at ' + ${spot.location}">Spot ID: SPOT1 at Metro Station A</p>
-        </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container py-4 reservation-container"> <!-- Adjusted padding, original py-5 -->
+            <div class="mb-4">
+                <h2><i class="fas fa-clipboard-check text-primary me-2"></i> Reserve Parking Spot</h2>
+                <p class="text-muted" th:text="'Spot ID: ' + ${spot.spotId} + ' at ' + ${spot.location}">Spot ID: SPOT1 at Metro Station A</p>
+            </div>
 
-        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}">
-        </div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}">
+            </div>
 
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="spot-image">
-                    <div class="d-flex justify-content-center align-items-center bg-light p-5 rounded" style="height: 300px;">
-                        <div class="text-center">
-                            <i class="fas fa-car-side fa-7x text-primary mb-3"></i>
-                            <h4 class="mt-3 text-primary">Spot <span th:text="${spot.spotId}">SPOT1</span></h4>
-                            <p class="text-muted" th:text="${spot.location}">Metro Station A</p>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="spot-image">
+                        <div class="d-flex justify-content-center align-items-center bg-light p-5 rounded" style="height: 300px;">
+                            <div class="text-center">
+                                <i class="fas fa-car-side fa-7x text-primary mb-3"></i>
+                                <h4 class="mt-3 text-primary">Spot <span th:text="${spot.spotId}">SPOT1</span></h4>
+                                <p class="text-muted" th:text="${spot.location}">Metro Station A</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="mt-4">
-                    <h4>Spot Details</h4>
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>Spot ID</th>
-                            <td th:text="${spot.spotId}">SPOT1</td>
-                        </tr>
-                        <tr>
-                            <th>Location</th>
-                            <td th:text="${spot.location}">Metro Station A</td>
-                        </tr>
-                        <tr>
-                            <th>Hourly Rate</th>
-                            <td>$<span th:text="${spot.hourlyRate}">5.00</span></td>
-                        </tr>
-                        <tr>
-                            <th>Daily Rate</th>
-                            <td>$<span th:text="${spot.dailyRate}">40.00</span></td>
-                        </tr>
-                        <tr>
-                            <th>Monthly Rate</th>
-                            <td>$<span th:text="${spot.monthlyRate}">300.00</span></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Reservation Form</h5>
+                    <div class="mt-4">
+                        <h4>Spot Details</h4>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Spot ID</th>
+                                <td th:text="${spot.spotId}">SPOT1</td>
+                            </tr>
+                            <tr>
+                                <th>Location</th>
+                                <td th:text="${spot.location}">Metro Station A</td>
+                            </tr>
+                            <tr>
+                                <th>Hourly Rate</th>
+                                <td>$<span th:text="${spot.hourlyRate}">5.00</span></td>
+                            </tr>
+                            <tr>
+                                <th>Daily Rate</th>
+                                <td>$<span th:text="${spot.dailyRate}">40.00</span></td>
+                            </tr>
+                            <tr>
+                                <th>Monthly Rate</th>
+                                <td>$<span th:text="${spot.monthlyRate}">300.00</span></td>
+                            </tr>
+                        </table>
                     </div>
-                    <div class="card-body">
-                        <form th:action="@{/parking/reserve}" method="post">
-                            <input type="hidden" name="spotId" th:value="${spot.spotId}">
-                            
-                            <div class="mb-3">
-                                <label for="startTime" class="form-label">Start Time</label>
-                                <input type="datetime-local" class="form-control" id="startTime" name="startTime" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="endTime" class="form-label">End Time</label>
-                                <input type="datetime-local" class="form-control" id="endTime" name="endTime" required>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label class="form-label">Select Reservation Type</label>
-                                <div class="row g-2">
-                                    <div class="col-md-4" th:each="type : ${reservationTypes}">
-                                        <div class="price-card card h-100 text-center p-3" 
-                                             th:data-type="${type}" 
-                                             onclick="selectType(this)">
-                                            <div class="card-body p-2">
-                                                <div class="mb-2" th:if="${type.name() == 'HOURLY'}">
-                                                    <i class="fas fa-clock fa-2x text-primary"></i>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Reservation Form</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/parking/reserve}" method="post" id="reservationForm"> <!-- Added ID to form -->
+                                <input type="hidden" name="spotId" th:value="${spot.spotId}">
+                                
+                                <div class="mb-3">
+                                    <label for="startTime" class="form-label">Start Time</label>
+                                    <input type="datetime-local" class="form-control" id="startTime" name="startTime" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="endTime" class="form-label">End Time</label>
+                                    <input type="datetime-local" class="form-control" id="endTime" name="endTime" required>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Select Reservation Type</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-4" th:each="type : ${reservationTypes}">
+                                            <div class="price-card card h-100 text-center p-3" 
+                                                 th:data-type="${type}" 
+                                                 th:data-hourly-rate="${spot.hourlyRate}"
+                                                 th:data-daily-rate="${spot.dailyRate}"
+                                                 th:data-monthly-rate="${spot.monthlyRate}"
+                                                 onclick="selectType(this)"> <!-- onclick remains for now -->
+                                                <div class="card-body p-2">
+                                                    <div class="mb-2" th:if="${type.name() == 'HOURLY'}">
+                                                        <i class="fas fa-clock fa-2x text-primary"></i>
+                                                    </div>
+                                                    <div class="mb-2" th:if="${type.name() == 'DAILY'}">
+                                                        <i class="fas fa-calendar-day fa-2x text-success"></i>
+                                                    </div>
+                                                    <div class="mb-2" th:if="${type.name() == 'MONTHLY'}">
+                                                        <i class="fas fa-calendar-alt fa-2x text-danger"></i>
+                                                    </div>
+                                                    <h6 class="card-title" th:text="${type.name()}">HOURLY</h6>
+                                                    <p class="card-text" th:if="${type.name() == 'HOURLY'}">
+                                                        $<span th:text="${#numbers.formatDecimal(spot.hourlyRate, 1, 'COMMA', 2, 'POINT')}">5.00</span>/hour
+                                                    </p>
+                                                    <p class="card-text" th:if="${type.name() == 'DAILY'}">
+                                                        $<span th:text="${#numbers.formatDecimal(spot.dailyRate, 1, 'COMMA', 2, 'POINT')}">40.00</span>/day
+                                                    </p>
+                                                    <p class="card-text" th:if="${type.name() == 'MONTHLY'}">
+                                                        $<span th:text="${#numbers.formatDecimal(spot.monthlyRate, 1, 'COMMA', 2, 'POINT')}">300.00</span>/month
+                                                    </p>
                                                 </div>
-                                                <div class="mb-2" th:if="${type.name() == 'DAILY'}">
-                                                    <i class="fas fa-calendar-day fa-2x text-success"></i>
-                                                </div>
-                                                <div class="mb-2" th:if="${type.name() == 'MONTHLY'}">
-                                                    <i class="fas fa-calendar-alt fa-2x text-danger"></i>
-                                                </div>
-                                                <h6 class="card-title" th:text="${type.name()}">HOURLY</h6>
-                                                <p class="card-text" th:if="${type.name() == 'HOURLY'}">
-                                                    $<span th:text="${spot.hourlyRate}">5.00</span>/hour
-                                                </p>
-                                                <p class="card-text" th:if="${type.name() == 'DAILY'}">
-                                                    $<span th:text="${spot.dailyRate}">40.00</span>/day
-                                                </p>
-                                                <p class="card-text" th:if="${type.name() == 'MONTHLY'}">
-                                                    $<span th:text="${spot.monthlyRate}">300.00</span>/month
-                                                </p>
                                             </div>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="type" id="reservationType" required>
                                 </div>
-                                <input type="hidden" name="type" id="reservationType" required>
-                            </div>
-                            
-                            <div class="reservation-summary p-3 mb-4" id="summary" style="display: none;">
-                                <h5 class="mb-3">Reservation Summary</h5>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Start Time:</span>
-                                    <span id="summaryStartTime"></span>
+                                
+                                <div class="reservation-summary p-3 mb-4" id="summary" style="display: none;">
+                                    <h5 class="mb-3">Reservation Summary</h5>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Start Time:</span>
+                                        <span id="summaryStartTime"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>End Time:</span>
+                                        <span id="summaryEndTime"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Duration:</span>
+                                        <span id="summaryDuration"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Type:</span>
+                                        <span id="summaryType"></span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between mb-2 fw-bold">
+                                        <span>Total Cost:</span>
+                                        <span id="summaryCost">$0.00</span>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>End Time:</span>
-                                    <span id="summaryEndTime"></span>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-check-circle me-2"></i> Confirm Reservation
+                                    </button>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Duration:</span>
-                                    <span id="summaryDuration"></span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Type:</span>
-                                    <span id="summaryType"></span>
-                                </div>
-                                <hr>
-                                <div class="d-flex justify-content-between mb-2 fw-bold">
-                                    <span>Total Cost:</span>
-                                    <span id="summaryCost">$0.00</span>
-                                </div>
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-check-circle me-2"></i> Confirm Reservation
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="text-muted mb-0">© 2023 Park & Ride. All rights reserved.</p>
-        </div>
-    </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Standardized Theme Toggle and Sidebar JS (from my-rides.html)
         document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const themeToggleIcon = themeToggle.querySelector('i');
+            const themeToggleText = themeToggle.querySelector('span');
+
+            function applyTheme(isDark) {
+                body.classList.toggle('dark-mode', isDark);
+                if (isDark) {
+                    themeToggleIcon.classList.remove('fa-moon');
+                    themeToggleIcon.classList.add('fa-sun');
+                    themeToggleText.textContent = 'Light Mode';
+                } else {
+                    themeToggleIcon.classList.remove('fa-sun');
+                    themeToggleIcon.classList.add('fa-moon');
+                    themeToggleText.textContent = 'Dark Mode';
+                }
+                localStorage.setItem('darkMode', isDark);
+            }
+
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            applyTheme(darkModeEnabled);
+            
+            themeToggle.addEventListener('click', function() {
+                applyTheme(!body.classList.contains('dark-mode'));
+            });
+
+            // Page-specific JS from original reserve.html, adapted
+            
             // Set default times based on current Mumbai, India time (IST)
             function setDefaultDates() {
-                // Get current date in UTC
                 const now = new Date();
-                
-                // Calculate IST by adding 5 hours and 30 minutes to UTC
                 const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
                 
-                // Round to the next hour
                 const startTime = new Date(istTime);
                 startTime.setMinutes(0, 0, 0);
                 startTime.setHours(startTime.getHours() + 1);
                 
-                // Set end time to 2 hours after start time
                 const endTime = new Date(startTime);
                 endTime.setHours(endTime.getHours() + 2);
                 
-                // Format dates for datetime-local input
                 const formatDateForInput = (date) => {
                     return date.getFullYear() + '-' + 
                         String(date.getMonth() + 1).padStart(2, '0') + '-' + 
@@ -252,127 +530,27 @@
                         String(date.getMinutes()).padStart(2, '0');
                 };
                 
-                // Set the default values
-                document.getElementById('startTime').value = formatDateForInput(startTime);
-                document.getElementById('endTime').value = formatDateForInput(endTime);
-                
-                // Update summary after setting default times
-                updateSummary();
-            }
-            
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                const body = document.body;
-                
-                // Check for stored preference and apply it
-                const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-                if (darkModeEnabled) {
-                    body.classList.add('dark-mode');
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                const startTimeInput = document.getElementById('startTime');
+                const endTimeInput = document.getElementById('endTime');
+
+                if (startTimeInput && endTimeInput) {
+                    startTimeInput.value = formatDateForInput(startTime);
+                    endTimeInput.value = formatDateForInput(endTime);
                 }
                 
-                themeToggle.addEventListener('click', function() {
-                    body.classList.toggle('dark-mode');
-                    
-                    const isDarkMode = body.classList.contains('dark-mode');
-                    localStorage.setItem('darkMode', isDarkMode);
-                    
-                    if (isDarkMode) {
-                        themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-                    } else {
-                        themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-                    }
-                });
+                updateSummary(); // Update summary after setting default times
             }
             
-            // Set default times immediately when page loads
+            // Set default times immediately
             setDefaultDates();
-        });
-        
-        // Handle reservation type selection
-        function selectType(element) {
-            // Remove active class from all price cards
-            document.querySelectorAll('.price-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            
-            // Add active class to selected card
-            element.classList.add('active');
-            
-            // Set the selected type value in the hidden input
-            const selectedType = element.getAttribute('data-type');
-            document.getElementById('reservationType').value = selectedType;
-            
-            // Update the summary
-            updateSummary();
-        }
-        
-        // Set HOURLY as default selection
-        document.addEventListener('DOMContentLoaded', function() {
+
+            // Set HOURLY as default selection
             const hourlyElement = document.querySelector('[data-type="HOURLY"]');
             if (hourlyElement) {
-                hourlyElement.classList.add('active');
-                document.getElementById('reservationType').value = 'HOURLY';
+                selectType(hourlyElement); // Use selectType to also trigger summary update
             }
-        });
-        
-        // Update reservation summary
-        function updateSummary() {
-            const startTime = new Date(document.getElementById('startTime').value);
-            const endTime = new Date(document.getElementById('endTime').value);
-            const type = document.getElementById('reservationType').value;
             
-            if (startTime && endTime && type) {
-                // Format dates for display
-                const formatDate = (date) => {
-                    return date.toLocaleString('en-US', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric',
-                        hour: '2-digit', 
-                        minute: '2-digit'
-                    });
-                };
-                
-                // Calculate duration
-                const durationMs = endTime - startTime;
-                const hours = Math.ceil(durationMs / (1000 * 60 * 60));
-                const days = Math.ceil(durationMs / (1000 * 60 * 60 * 24));
-                const months = Math.ceil(days / 30);
-                
-                let durationText = '';
-                let cost = 0;
-                
-                // Display duration based on type
-                if (type === 'HOURLY') {
-                    durationText = hours + (hours === 1 ? ' hour' : ' hours');
-                    cost = hours * parseFloat(document.querySelector('[data-type="HOURLY"] .card-text').textContent.replace(/[^\d.]/g, ''));
-                } else if (type === 'DAILY') {
-                    durationText = days + (days === 1 ? ' day' : ' days');
-                    cost = days * parseFloat(document.querySelector('[data-type="DAILY"] .card-text').textContent.replace(/[^\d.]/g, ''));
-                } else if (type === 'MONTHLY') {
-                    durationText = months + (months === 1 ? ' month' : ' months');
-                    cost = months * parseFloat(document.querySelector('[data-type="MONTHLY"] .card-text').textContent.replace(/[^\d.]/g, ''));
-                }
-                
-                // Update summary elements
-                document.getElementById('summaryStartTime').textContent = formatDate(startTime);
-                document.getElementById('summaryEndTime').textContent = formatDate(endTime);
-                document.getElementById('summaryDuration').textContent = durationText;
-                document.getElementById('summaryType').textContent = type;
-                document.getElementById('summaryCost').textContent = '$' + cost.toFixed(2);
-                
-                // Show the summary
-                const summaryElement = document.getElementById('summary');
-                if (summaryElement) {
-                    summaryElement.style.display = 'block';
-                }
-            }
-        }
-        
-        // Add event listeners to update summary when inputs change
-        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to update summary when inputs change
             const startTimeElement = document.getElementById('startTime');
             const endTimeElement = document.getElementById('endTime');
             
@@ -381,6 +559,99 @@
                 endTimeElement.addEventListener('change', updateSummary);
             }
         });
+        
+        // Handle reservation type selection (Global function)
+        function selectType(element) {
+            document.querySelectorAll('.price-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            const selectedType = element.getAttribute('data-type');
+            document.getElementById('reservationType').value = selectedType;
+            
+            updateSummary();
+        }
+        
+        // Update reservation summary (Global function)
+        function updateSummary() {
+            const startTimeInput = document.getElementById('startTime');
+            const endTimeInput = document.getElementById('endTime');
+            const typeInput = document.getElementById('reservationType');
+
+            if (!startTimeInput || !endTimeInput || !typeInput || !startTimeInput.value || !endTimeInput.value || !typeInput.value) {
+                // Hide summary if inputs are not ready
+                const summaryElement = document.getElementById('summary');
+                if (summaryElement) summaryElement.style.display = 'none';
+                return;
+            }
+
+            const startTime = new Date(startTimeInput.value);
+            const endTime = new Date(endTimeInput.value);
+            const type = typeInput.value;
+            
+            const summaryElement = document.getElementById('summary');
+
+            if (isNaN(startTime.getTime()) || isNaN(endTime.getTime()) || !type) {
+                 if (summaryElement) summaryElement.style.display = 'none';
+                return;
+            }
+            
+            if (endTime <= startTime) {
+                alert("End time must be after start time.");
+                if (summaryElement) summaryElement.style.display = 'none';
+                // Optionally clear the end time or set it to a default valid value
+                // endTimeInput.value = ""; 
+                return;
+            }
+
+
+            const formatDate = (date) => {
+                return date.toLocaleString('en-US', { 
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            };
+            
+            const durationMs = endTime - startTime;
+            const hours = Math.ceil(durationMs / (1000 * 60 * 60));
+            const days = Math.ceil(durationMs / (1000 * 60 * 60 * 24));
+            const months = Math.ceil(days / 30); // Approximation for months
+            
+            let durationText = '';
+            let cost = 0;
+            
+            const selectedPriceCard = document.querySelector('.price-card.active');
+            if (!selectedPriceCard) {
+                if (summaryElement) summaryElement.style.display = 'none';
+                return; // Should not happen if a type is selected
+            }
+
+            const hourlyRate = parseFloat(selectedPriceCard.getAttribute('data-hourly-rate'));
+            const dailyRate = parseFloat(selectedPriceCard.getAttribute('data-daily-rate'));
+            const monthlyRate = parseFloat(selectedPriceCard.getAttribute('data-monthly-rate'));
+
+            if (type === 'HOURLY') {
+                durationText = hours + (hours === 1 ? ' hour' : ' hours');
+                cost = hours * hourlyRate;
+            } else if (type === 'DAILY') {
+                durationText = days + (days === 1 ? ' day' : ' days');
+                cost = days * dailyRate;
+            } else if (type === 'MONTHLY') {
+                durationText = months + (months === 1 ? ' month' : ' months');
+                cost = months * monthlyRate;
+            }
+            
+            document.getElementById('summaryStartTime').textContent = formatDate(startTime);
+            document.getElementById('summaryEndTime').textContent = formatDate(endTime);
+            document.getElementById('summaryDuration').textContent = durationText;
+            document.getElementById('summaryType').textContent = type;
+            document.getElementById('summaryCost').textContent = '$' + cost.toFixed(2);
+            
+            if (summaryElement) {
+                summaryElement.style.display = 'block';
+            }
+        }
     </script>
 </body>
-</html> 
+</html>

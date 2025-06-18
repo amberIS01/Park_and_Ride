@@ -7,104 +7,268 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #ffc107;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --border-radius: 10px;
+            --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            background-color: var(--light-color);
             transition: background-color 0.3s ease;
         }
-        body.dark-mode {
-            background-color: #212529;
-            color: #f8f9fa;
-        }
-        .dark-mode .card {
-            background-color: #343a40;
-            color: #f8f9fa;
-        }
-        .dark-mode .sidebar {
-            background-color: #343a40;
-        }
-        .dark-mode .sidebar .nav-link {
-            color: #f8f9fa;
-        }
-        .dark-mode .table {
-            color: #f8f9fa;
-        }
-        .dark-mode .btn-secondary {
-            background-color: #495057;
-            border-color: #495057;
-        }
-        .dark-mode .tab-btn {
-            color: #f8f9fa;
-        }
-        .dark-mode .tab-btn.active {
-            border-bottom-color: #6ea8fe;
-        }
-        .dark-mode .card-header {
-            background-color: #0d6efd !important;
-        }
-        .dark-mode .text-muted {
-            color: #adb5bd !important;
-        }
-        .dark-mode .reservation-detail-label {
-            color: #adb5bd;
-        }
-        .dark-mode .reservation-detail span:not(.reservation-detail-label):not(.text-success):not(.text-danger) {
-            color: #e9ecef;
-            font-weight: 500;
-        }
-        .dark-mode .info-value {
-            color: #e9ecef;
-            font-weight: 500;
-        }
-        .dark-mode .vehicle-badge {
-            background-color: #0d6efd;
-            color: white;
-            font-weight: 600;
-        }
-        .dark-mode .table, .dark-mode .table th, .dark-mode .table td {
-            color: #e9ecef;
-        }
+        
         .sidebar {
+            height: 100vh;
             position: fixed;
             top: 0;
-            bottom: 0;
             left: 0;
+            width: 250px; 
             z-index: 100;
-            padding: 48px 0 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-            background-color: #ffffff;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s;
+            background-color: #ffffff; 
         }
+        
+        .sidebar-sticky {
+            position: relative; 
+            top: 0;
+            height: 100%; 
+            padding-top: 1rem; 
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content { 
+            margin-left: 250px;
+            transition: all 0.3s;
+            /* padding will be applied by p-4 on the main-content div itself */
+        }
+
+        .sidebar-brand-logo {
+            padding-left: 1rem; 
+            margin-bottom: 1rem; 
+        }
+
+        .sidebar-user-info {
+            padding-left: 1rem; 
+            padding-right: 1rem; 
+            margin-bottom: 1rem; 
+        }
+        .sidebar-user-info h6 {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .text-muted {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .user-points {
+            font-size: 0.9em;
+        }
+        .sidebar-user-info .badge {
+            font-size: 0.8em;
+        }
+
         .sidebar .nav-link {
             font-weight: 500;
-            color: #333;
+            color: #333; 
             padding: 0.75rem 1.5rem;
         }
         .sidebar .nav-link.active {
-            color: #0d6efd;
+            color: #0d6efd; 
         }
         .sidebar .nav-link:hover {
             color: #0d6efd;
         }
         .sidebar .nav-link i {
-            margin-right: 10px;
+            margin-right: 10px; 
         }
-        .content-wrapper {
-            margin-left: 250px;
-            padding: 20px;
+
+        .sidebar-footer {
+            padding: 1rem; 
+            margin-top: auto; 
         }
-        @media (max-width: 768px) {
+        .sidebar-footer .theme-toggle span { /* Ensure span exists for JS to target */
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 767.98px) { /* Standardized media query */
             .sidebar {
-                top: 5rem;
+                width: 60px;
+                transform: translateX(-200px);
             }
-            .content-wrapper {
-                margin-left: 0;
+            .sidebar.show { /* For Bootstrap toggler */
+                 transform: translateX(0);
+            }
+            .sidebar:hover:not(.show) {
+                width: 250px;
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0; /* Full width when sidebar is collapsed or on mobile */
+            }
+            .sidebar .nav-link span,
+            .sidebar .navbar-brand span, /* Though brand is not in this exact structure, good to keep */
+            .sidebar .sidebar-user-info h6,
+            .sidebar .sidebar-user-info small,
+            .sidebar .sidebar-user-info .user-points,
+            .sidebar .sidebar-user-info .user-subscription,
+            .sidebar .sidebar-footer .btn span {
+                display: none;
+            }
+            .sidebar:hover .nav-link span,
+            .sidebar:hover .navbar-brand span,
+            .sidebar:hover .sidebar-user-info h6,
+            .sidebar:hover .sidebar-user-info small,
+            .sidebar:hover .sidebar-user-info .user-points,
+            .sidebar:hover .sidebar-user-info .user-subscription,
+            .sidebar:hover .sidebar-footer .btn span,
+            .sidebar.show .nav-link span,
+            .sidebar.show .navbar-brand span,
+            .sidebar.show .sidebar-user-info h6,
+            .sidebar.show .sidebar-user-info small,
+            .sidebar.show .sidebar-user-info .user-points,
+            .sidebar.show .sidebar-user-info .user-subscription,
+            .sidebar.show .sidebar-footer .btn span {
+                display: inline;
+            }
+             .main-content.sidebar-is-open { 
+                 margin-left: 250px;
             }
         }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f8f9fa;
+        }
+        
+        .dark-mode .sidebar {
+            background-color: #212529; 
+            border-right: 1px solid #343a40; 
+        }
+        .dark-mode .sidebar .nav-link {
+            color: #adb5bd; 
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #6ea8fe; 
+        }
+        .dark-mode .sidebar .nav-link:hover {
+            color: #ffffff;
+        }
+        .dark-mode .sidebar .sidebar-brand-logo .text-dark,
+        .dark-mode .sidebar .sidebar-user-info h6 {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .sidebar .sidebar-user-info .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .sidebar .user-subscription .badge.bg-success { background-color: #1e7e34; color: #ffffff; }
+        .dark-mode .sidebar .user-points { 
+            color: #ffc107 !important; 
+        }
+        .dark-mode .sidebar hr {
+            border-top-color: #444;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary { 
+             color: #adb5bd;
+             border-color: #adb5bd;
+        }
+        .dark-mode .sidebar-footer .btn-outline-secondary:hover {
+            color: #212529;
+            background-color: #adb5bd;
+        }
+        .dark-mode .navbar.bg-light { /* For mobile top nav */
+            background-color: #212529 !important;
+            border-bottom: 1px solid #343a40;
+        }
+         .dark-mode .navbar-brand .text-primary, .dark-mode .sidebar-brand-logo .text-primary {
+             color: #6ea8fe !important; 
+        }
+         .dark-mode .navbar-toggler {
+            border-color: rgba(255,255,255,0.1);
+        }
+        .dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+
+        /* Page-specific dark mode styles */
+        .dark-mode .card {
+            background-color: #2c3034; 
+            color: #f8f9fa;
+            border-color: #444;
+        }
+        .dark-mode .table, .dark-mode .table th, .dark-mode .table td { /* Retained for potential tables */
+            color: #e9ecef; 
+        }
+        .dark-mode .btn-secondary { 
+            background-color: #495057;
+            border-color: #495057;
+            color: #e9ecef;
+        }
+        .dark-mode .tab-btn {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #adb5bd;
+        }
+        .dark-mode .tab-btn.active {
+            background-color: var(--primary-color); 
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .dark-mode .text-muted { 
+            color: #adb5bd !important;
+        }
+        .dark-mode .reservation-detail-label {
+            color: #adb5bd; 
+        }
+        .dark-mode .reservation-detail span:not(.reservation-detail-label):not(.text-success):not(.text-danger) {
+            color: #e9ecef; 
+        }
+        .dark-mode .vehicle-badge {
+            background-color: #495057; 
+            color: #e9ecef;
+        }
+        .dark-mode .qr-code-box { /* QR code itself needs to be on white */
+            background-color: white !important; 
+        }
+         .dark-mode .qr-code-box i { /* Ensure QR icon is dark on white bg */
+            color: #212529 !important;
+        }
+        .dark-mode .qr-code-footer {
+            background-color: #2c3034 !important; 
+            color: #f8f9fa;
+            border-color: #444 !important;
+        }
+        .dark-mode .qr-code-footer .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .border-bottom {
+            border-bottom-color: #444 !important;
+        }
+        .dark-mode .bg-light { /* For QR code footer in dark mode */
+            background-color: #2c3034 !important;
+        }
+        .dark-mode .alert-info {
+            background-color: #0d6efd; /* Using primary color for info in dark mode */
+            color: white;
+            border-color: #0d6efd;
+        }
+
+
+        /* Original page-specific styles (retained and checked for conflicts) */
         .reservation-card {
             margin-bottom: 20px;
-            border-radius: 10px;
+            border-radius: var(--border-radius); 
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow); 
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .reservation-card:hover {
@@ -120,23 +284,19 @@
         }
         .reservation-detail-label {
             font-weight: 600;
-            color: #6c757d;
+            color: #6c757d; 
             margin-right: 5px;
             min-width: 100px;
             display: inline-block;
         }
         .vehicle-badge {
             display: inline-block;
-            background-color: #e9ecef;
+            background-color: #e9ecef; 
             color: #495057;
             padding: 5px 10px;
             border-radius: 20px;
             margin-bottom: 15px;
             font-size: 0.85rem;
-        }
-        .dark-mode .vehicle-badge {
-            background-color: #495057;
-            color: #e9ecef;
         }
         .tab-buttons {
             margin-bottom: 20px;
@@ -146,34 +306,23 @@
             gap: 10px;
         }
         .tab-btn {
-            background-color: #f8f9fa;
+            background-color: #f8f9fa; 
             border: 1px solid #dee2e6;
-            color: #6c757d;
+            color: #6c757d; 
             font-weight: 500;
             border-radius: 20px;
             transition: all 0.3s ease;
         }
         .tab-btn.active {
-            background-color: #0d6efd;
+            background-color: var(--primary-color);
             color: white;
-            border-color: #0d6efd;
+            border-color: var(--primary-color);
         }
-        .dark-mode .tab-btn {
-            background-color: #343a40;
-            border-color: #495057;
-            color: #adb5bd;
-        }
-        .dark-mode .tab-btn.active {
-            background-color: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-        }
-        /* QR Code Styles */
         .qr-code-container {
             display: inline-block;
             max-width: 220px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
             overflow: hidden;
             margin-bottom: 15px;
         }
@@ -189,103 +338,102 @@
         .qr-code-footer {
             font-size: 0.85rem;
         }
-        .dark-mode .qr-code-box {
-            background-color: white !important;
-        }
-        .dark-mode .qr-code-footer {
-            background-color: #343a40 !important;
-            color: #f8f9fa;
-        }
-        .dark-mode .qr-code-footer .text-muted {
-            color: #adb5bd !important;
-        }
     </style>
 </head>
 <body>
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-light bg-white fixed-top shadow-sm d-md-none">
+    <!-- Top Navbar for mobile -->
+    <nav class="navbar navbar-light bg-light fixed-top shadow-sm d-md-none">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/" th:href="@{/}">
                 <i class="fas fa-car-side text-primary me-2"></i>
-                Park & Ride
+                <span class="text-dark">Park & Ride</span> <!-- Ensure text-dark for visibility in light mode -->
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
     </nav>
 
     <!-- Sidebar -->
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-        <div class="position-sticky">
-            <div class="d-none d-md-flex align-items-center justify-content-center p-3 mb-3">
-                <a class="navbar-brand fw-bold" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                    <i class="fas fa-car-side text-primary me-2"></i>
-                    Park & Ride
+    <nav id="sidebarMenu" class="d-md-block sidebar collapse">
+        <div class="position-sticky pt-3 sidebar-sticky"> 
+            
+            <div class="sidebar-brand-logo d-flex align-items-center">
+                <a href="/" th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
+                    <i class="fas fa-car-side text-primary me-2 fa-2x"></i>
+                    <span class="fs-4 fw-bold">Park & Ride</span>
                 </a>
             </div>
-            <div class="text-center mb-4">
+
+            <div th:if="${user != null}" class="text-center mb-4 sidebar-user-info">
                 <div class="mb-3">
                     <i class="fas fa-user-circle fa-4x text-primary"></i>
                 </div>
                 <h6 th:text="${user.firstName + ' ' + user.lastName}">User Name</h6>
                 <small class="text-muted d-block" th:text="${user.email}">user@example.com</small>
-                <div class="user-rewards mt-2">
-                    <span class="badge bg-warning text-dark">
-                        <i class="fas fa-gift me-1"></i>
-                        <span th:text="${user.rewardPoints}">0</span> Points
-                    </span>
+                <small class="text-muted d-block user-points"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</small>
+                <div class="mt-2 user-subscription" th:if="${user.hasActiveSubscription()}">
+                     <span class="badge bg-success" th:text="${user.subscriptionType != null ? user.subscriptionType.displayName : 'Active Subscription'}">Active Subscription</span>
+                </div>
+                 <div class="mt-2 user-subscription" th:unless="${user.hasActiveSubscription()}" style="min-height: 24px;"> 
                 </div>
             </div>
+            <hr th:if="${user != null}" class="mx-3 my-2">
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
+                    <a class="nav-link text-dark" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/parking/my-reservations" th:href="@{/parking/my-reservations}">
-                        <i class="fas fa-ticket-alt"></i>
-                        My Reservations
+                    <a class="nav-link active text-primary" th:href="@{/parking/my-reservations}"> <!-- Active class here -->
+                        <i class="fas fa-ticket-alt me-2"></i>My Reservations
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/subscriptions" th:href="@{/user/subscriptions}">
-                        <i class="fas fa-crown"></i>
-                        Subscriptions
+                    <a class="nav-link text-dark" th:href="@{/user/subscriptions}">
+                        <i class="fas fa-calendar-check me-2"></i>Subscriptions
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/rewards" th:href="@{/user/rewards}">
-                        <i class="fas fa-gift"></i>
-                        Rewards
+                    <a class="nav-link text-dark" th:href="@{/user/rewards}">
+                        <i class="fas fa-gift me-2"></i>Rewards
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/rides/last-mile" th:href="@{/rides/last-mile}">
-                        <i class="fas fa-shuttle-van"></i>
-                        Last-Mile Rides
+                    <a class="nav-link text-dark" th:href="@{/rides/last-mile}">
+                        <i class="fas fa-shuttle-van me-2"></i>Last-Mile Rides
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/profile" th:href="@{/user/profile}">
-                        <i class="fas fa-user-cog"></i>
-                        Profile
+                    <a class="nav-link text-dark" th:href="@{/rides/my-rides}">
+                        <i class="fas fa-history me-2"></i>My Rides
                     </a>
                 </li>
-                <li class="nav-item mt-5">
-                    <a class="nav-link text-danger" href="/logout" th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/user/profile}">
+                        <i class="fas fa-user-cog me-2"></i>Profile
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <hr class="mx-3 my-2">
+                <button id="themeToggleSidebar" class="btn btn-sm btn-outline-secondary theme-toggle w-100 mb-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-moon me-2"></i> 
+                    <span>Dark Mode</span> 
+                </button>
+                <hr class="mx-3 my-2">
+                <a class="nav-link text-dark d-flex align-items-center justify-content-center" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="content-wrapper">
+    <div class="main-content p-4 pb-5"> 
         <!-- Alerts -->
         <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
             <span th:text="${successMessage}"></span>
@@ -303,13 +451,7 @@
         <!-- My Reservations Header -->
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">My Reservations</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-                <div class="btn-group me-2">
-                    <button id="themeToggle" class="btn btn-sm btn-outline-secondary theme-toggle">
-                        <i class="fas fa-moon"></i> Dark Mode
-                    </button>
-                </div>
-            </div>
+            <!-- Theme toggle removed from here, now in sidebar footer -->
         </div>
 
         <!-- Tab Navigation -->
@@ -334,7 +476,7 @@
                         Reservation #<span th:text="${#strings.substring(reservation.reservationId, 0, 8)}">abc123</span>
                     </h5>
                     <span th:if="${reservation.status.name() == 'CONFIRMED'}" class="badge bg-success badge-status">CONFIRMED</span>
-                    <span th:if="${reservation.status.name() == 'PENDING'}" class="badge bg-warning badge-status">PENDING</span>
+                    <span th:if="${reservation.status.name() == 'PENDING'}" class="badge bg-warning badge-status text-dark">PENDING</span> <!-- Added text-dark for better contrast on yellow -->
                     <span th:if="${reservation.status.name() == 'CANCELLED'}" class="badge bg-danger badge-status">CANCELLED</span>
                     <span th:if="${reservation.status.name() == 'COMPLETED'}" class="badge bg-secondary badge-status">COMPLETED</span>
                 </div>
@@ -405,68 +547,80 @@
                 </div>
             </div>
         </div>
-    </main>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('themeToggle');
+        document.addEventListener('DOMContentLoaded', function () {
+            // Standardized Theme toggle functionality
+            const themeToggleSidebar = document.getElementById('themeToggleSidebar'); // Ensure this ID matches the button
             const body = document.body;
-            
-            // Check for stored preference and apply it
-            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-            if (darkModeEnabled) {
-                body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-            }
-            
-            themeToggle.addEventListener('click', function() {
-                body.classList.toggle('dark-mode');
-                
-                const isDarkMode = body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDarkMode);
-                
-                if (isDarkMode) {
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            const themeIcon = themeToggleSidebar.querySelector('i');
+            const themeText = themeToggleSidebar.querySelector('span');
+
+            const applyTheme = (darkMode) => {
+                body.classList.toggle('dark-mode', darkMode);
+                if (darkMode) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    themeText.textContent = 'Light Mode';
                 } else {
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    themeText.textContent = 'Dark Mode';
                 }
+            };
+
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            applyTheme(darkModeEnabled);
+
+            themeToggleSidebar.addEventListener('click', function () {
+                const isDarkMode = body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', isDarkMode);
+                applyTheme(isDarkMode);
             });
-            
-            // Tab filtering functionality
+
+            // Mobile sidebar toggler functionality
+            const sidebar = document.getElementById('sidebarMenu');
+            const mainContent = document.querySelector('.main-content'); // Standardized selector
+            const navbarToggler = document.querySelector('.navbar-toggler');
+
+            if (navbarToggler) {
+                navbarToggler.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                    // mainContent.classList.toggle('sidebar-is-open'); // Optional: for content push
+                });
+            }
+
+            // Page-specific script for tab filtering
             const tabButtons = document.querySelectorAll('.tab-btn');
             const reservationCards = document.querySelectorAll('.reservation-card');
-            
+
             tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
+                button.addEventListener('click', function () {
                     tabButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
                     this.classList.add('active');
-                    
-                    const target = this.getAttribute('data-target');
-                    
+                    const targetStatus = this.getAttribute('data-target');
+
                     reservationCards.forEach(card => {
-                        const status = card.getAttribute('data-status');
-                        
-                        if (target === 'all') {
-                            card.style.display = 'block';
-                        } else if (target === 'active' && status === 'CONFIRMED') {
-                            card.style.display = 'block';
-                        } else if (target === 'upcoming' && status === 'PENDING') {
-                            card.style.display = 'block';
-                        } else if (target === 'completed' && status === 'COMPLETED') {
-                            card.style.display = 'block';
-                        } else if (target === 'cancelled' && status === 'CANCELLED') {
-                            card.style.display = 'block';
+                        if (targetStatus === 'all' || card.getAttribute('data-status').toLowerCase() === targetStatus) {
+                            card.style.display = '';
                         } else {
                             card.style.display = 'none';
                         }
                     });
                 });
             });
+             // Initial filter application (e.g. if a tab should be active by default other than 'all')
+            const activeTab = document.querySelector('.tab-btn.active');
+            if (activeTab) {
+                activeTab.click(); 
+            } else if (tabButtons.length > 0) {
+                 // Fallback to click the first tab if no tab is marked active initially
+                tabButtons[0].click();
+            }
         });
     </script>
 </body>
-</html> 
+</html>

@@ -179,50 +179,79 @@ public class UserService implements UserDetailsService {
     
     @Transactional
     public void initializeSampleData() {
-        // Only add sample users if repository is empty
-        if (userRepository.count() == 0) {
-            User user1 = new User(
-                    "john.doe", 
-                    passwordEncoder.encode("password"), 
-                    "John", 
-                    "Doe", 
-                    "john.doe@example.com", 
-                    "1234567890",
-                    "MH-01-AB-1234"
+        // Create test users if they don't exist
+        createUserIfNotExists(
+            "john.doe", 
+            "password", 
+            "John", 
+            "Doe", 
+            "john.doe@example.com", 
+            "1234567890", 
+            "MH-01-AB-1234",
+            250,
+            50.0,
+            null
+        );
+        
+        createUserIfNotExists(
+            "jane.smith", 
+            "password", 
+            "Jane", 
+            "Smith", 
+            "jane.smith@example.com", 
+            "0987654321", 
+            "MH-02-CD-5678",
+            100,
+            25.0,
+            "BASIC"
+        );
+        
+        createUserIfNotExists(
+            "testuser",
+            "test123",
+            "Test",
+            "User",
+            "test@example.com",
+            "5555555555",
+            "DL-05-EF-9012",
+            100,
+            50.0,
+            null
+        );
+    }
+    
+    private void createUserIfNotExists(String username, String password, String firstName, 
+                                     String lastName, String email, String phoneNumber, 
+                                     String vehicleNumber, int rewardPoints, double creditBalance, 
+                                     String subscriptionType) {
+        // Check if user already exists
+        if (userRepository.findByUsername(username).isPresent()) {
+            return; // User already exists, skip creation
+        }
+        
+        try {
+            User user = new User(
+                username,
+                passwordEncoder.encode(password),
+                firstName,
+                lastName,
+                email,
+                phoneNumber,
+                vehicleNumber
             );
-            user1.setRewardPoints(250);
-            user1.setCreditBalance(50.0);
             
-            User user2 = new User(
-                    "jane.smith", 
-                    passwordEncoder.encode("password"), 
-                    "Jane", 
-                    "Smith", 
-                    "jane.smith@example.com", 
-                    "0987654321",
-                    "KA-02-CD-5678"
-            );
-            user2.setRewardPoints(175);
-            user2.setCreditBalance(50.0);
-            user2.setSubscriptionType(User.SubscriptionType.PREMIUM);
-            user2.setSubscriptionStartDate(LocalDateTime.now().minusDays(15));
-            user2.setSubscriptionExpiryDate(LocalDateTime.now().plusMonths(5).plusDays(15));
+            user.setRewardPoints(rewardPoints);
+            user.setCreditBalance(creditBalance);
             
-            User testUser = new User(
-                    "testuser", 
-                    passwordEncoder.encode("test123"), 
-                    "Test", 
-                    "User", 
-                    "test@example.com", 
-                    "5555555555",
-                    "DL-05-EF-9012"
-            );
-            testUser.setRewardPoints(100);
-            testUser.setCreditBalance(50.0);
+            // Add subscription if specified
+            if (subscriptionType != null) {
+                user = addSubscription(user, subscriptionType);
+            }
             
-            userRepository.save(user1);
-            userRepository.save(user2);
-            userRepository.save(testUser);
+            userRepository.save(user);
+        } catch (Exception e) {
+            // Log the error but don't fail the entire application
+            System.err.println("Error creating user " + username + ": " + e.getMessage());
         }
     }
 } 

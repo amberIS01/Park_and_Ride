@@ -7,42 +7,210 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #ffc107;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --border-radius: 10px;
+            --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            background-color: var(--light-color);
             transition: background-color 0.3s ease;
         }
+        
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; /* Standardized width */
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s;
+            background-color: #ffffff; /* Ensure light mode background */
+        }
+        
+        .sidebar-sticky {
+            position: relative; 
+            top: 0;
+            height: 100%; 
+            padding-top: 1rem; 
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content { /* Standardized main content class */
+            margin-left: 250px;
+            transition: all 0.3s;
+            padding: 20px; /* Retain dashboard padding */
+        }
+
+        .sidebar-brand-logo {
+            padding-left: 1rem; 
+            margin-bottom: 1rem; 
+        }
+
+        .sidebar-user-info {
+            padding-left: 1rem; 
+            padding-right: 1rem; 
+            margin-bottom: 1rem; 
+        }
+        .sidebar-user-info h6 {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .text-muted {
+            margin-bottom: 0.25rem; 
+        }
+        .sidebar-user-info .user-points {
+            font-size: 0.9em;
+        }
+        .sidebar-user-info .badge {
+            font-size: 0.8em;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #333; 
+            padding: 0.75rem 1.5rem;
+        }
+        .sidebar .nav-link.active {
+            color: #0d6efd; 
+        }
+        .sidebar .nav-link:hover {
+            color: #0d6efd;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px; 
+        }
+
+        .sidebar-footer {
+            padding: 1rem; 
+            margin-top: auto; 
+        }
+        .sidebar-footer .theme-toggle span {
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 767.98px) { /* Adjusted from 768px to match my-rides */
+            .sidebar {
+                width: 60px;
+                transform: translateX(-200px); /* Keep sidebar hidden by default on mobile */
+                /* padding-top: 60px; Removed, handled by sidebar-sticky and mobile nav */
+            }
+            
+            .sidebar.show { /* Added for Bootstrap toggler */
+                 transform: translateX(0);
+            }
+
+            .sidebar:hover:not(.show) { /* Allow hover expand only if not explicitly shown by toggler */
+                width: 250px;
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0; /* Full width when sidebar is collapsed or on mobile */
+            }
+            
+            .sidebar .nav-link span,
+            .sidebar .navbar-brand span,
+            .sidebar .sidebar-user-info h6,
+            .sidebar .sidebar-user-info small,
+            .sidebar .sidebar-user-info .user-points,
+            .sidebar .sidebar-user-info .user-subscription,
+            .sidebar .sidebar-footer .btn span { /* Hide text elements on collapsed sidebar */
+                display: none;
+            }
+            
+            .sidebar:hover .nav-link span,
+            .sidebar:hover .navbar-brand span,
+            .sidebar:hover .sidebar-user-info h6,
+            .sidebar:hover .sidebar-user-info small,
+            .sidebar:hover .sidebar-user-info .user-points,
+            .sidebar:hover .sidebar-user-info .user-subscription,
+            .sidebar:hover .sidebar-footer .btn span,
+            .sidebar.show .nav-link span, /* Show text when expanded by toggler */
+            .sidebar.show .navbar-brand span,
+            .sidebar.show .sidebar-user-info h6,
+            .sidebar.show .sidebar-user-info small,
+            .sidebar.show .sidebar-user-info .user-points,
+            .sidebar.show .sidebar-user-info .user-subscription,
+            .sidebar.show .sidebar-footer .btn span {
+                display: inline;
+            }
+            .main-content.sidebar-is-open { /* Push content when sidebar is open on mobile */
+                 margin-left: 250px;
+            }
+        }
+        
+        /* Dark mode styles */
         body.dark-mode {
-            background-color: #212529;
+            background-color: #121212;
             color: #f8f9fa;
         }
-        .dark-mode .card {
-            background-color: #343a40;
-            color: #f8f9fa;
-        }
+        
         .dark-mode .sidebar {
-            background-color: #343a40;
+            background-color: #212529; 
+            border-right: 1px solid #343a40; 
         }
         .dark-mode .sidebar .nav-link {
+            color: #adb5bd; 
+        }
+        .dark-mode .sidebar .nav-link.active {
+            color: #6ea8fe; 
+        }
+        .dark-mode .sidebar .nav-link:hover {
+            color: #ffffff;
+        }
+        .dark-mode .sidebar .sidebar-brand-logo .text-dark,
+        .dark-mode .sidebar .sidebar-user-info h6 {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .sidebar .sidebar-user-info .text-muted {
+            color: #adb5bd !important;
+        }
+        .dark-mode .sidebar .user-subscription .badge.bg-success { background-color: #1e7e34; color: #ffffff; }
+        .dark-mode .sidebar .user-rewards .badge.bg-warning.text-dark, 
+        .dark-mode .sidebar .user-points { 
+            color: #ffc107 !important; 
+        }
+        .dark-mode .sidebar hr {
+            border-top-color: #444;
+        }
+
+        .dark-mode .card { /* General card dark mode */
+            background-color: #212529;
             color: #f8f9fa;
+            border-color: #444;
+        }
+        .dark-mode .card-header { /* Specific for dashboard cards, ensure it overrides general if needed */
+             background-color: #0d6efd !important; /* Retained from original dashboard.html for primary headers */
+             border-bottom: 1px solid #444;
+        }
+        .dark-mode .card-footer {
+            background-color: #2c3034;
+            border-color: #444;
+        }
+        
+        .dark-mode .bg-white {
+            background-color: #212529 !important;
+        }
+        
+        .dark-mode .text-dark {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .text-muted { 
+            color: #adb5bd !important;
         }
         .dark-mode .table {
             color: #f8f9fa;
-        }
-        .dark-mode .form-label {
-            color: #f8f9fa;
-        }
-        .dark-mode .form-select {
-            background-color: #495057;
-            color: #f8f9fa;
-            border-color: #6c757d;
-        }
-        .dark-mode .form-select option {
-            background-color: #495057;
-            color: #f8f9fa;
-        }
-        .dark-mode .card-header {
-            background-color: #0d6efd !important;
+            border-color: #444;
         }
         .dark-mode .table th {
             color: #adb5bd;
@@ -52,42 +220,42 @@
             color: #e9ecef;
             font-weight: 500;
         }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            padding: 48px 0 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-            background-color: #ffffff;
+        .dark-mode .form-label {
+            color: #f8f9fa;
         }
-        .sidebar .nav-link {
-            font-weight: 500;
-            color: #333;
-            padding: 0.75rem 1.5rem;
+        .dark-mode .form-select, .dark-mode .form-control {
+            background-color: #343a40; /* Adjusted for better contrast */
+            color: #f8f9fa;
+            border-color: #6c757d;
         }
-        .sidebar .nav-link.active {
-            color: #0d6efd;
+        .dark-mode .form-select option {
+            background-color: #343a40;
+            color: #f8f9fa;
         }
-        .sidebar .nav-link:hover {
-            color: #0d6efd;
+        .dark-mode .sidebar-footer .btn-outline-secondary { 
+             color: #adb5bd;
+             border-color: #adb5bd;
         }
-        .sidebar .nav-link i {
-            margin-right: 10px;
+        .dark-mode .sidebar-footer .btn-outline-secondary:hover {
+            color: #212529;
+            background-color: #adb5bd;
         }
-        .content-wrapper {
-            margin-left: 250px;
-            padding: 20px;
+        .dark-mode .navbar.bg-white { /* For mobile top nav */
+            background-color: #212529 !important;
+            border-bottom: 1px solid #343a40;
         }
-        @media (max-width: 768px) {
-            .sidebar {
-                top: 5rem;
-            }
-            .content-wrapper {
-                margin-left: 0;
-            }
+        .dark-mode .navbar-brand .text-primary, .dark-mode .sidebar-brand-logo .text-primary {
+             color: #6ea8fe !important; /* Adjust primary color for brand in dark mode */
         }
+         .dark-mode .navbar-toggler {
+            border-color: rgba(255,255,255,0.1);
+        }
+        .dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+
+        /* Dashboard specific styles - Retained */
         .reservation-card {
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
             border-radius: 0.5rem;
@@ -101,7 +269,7 @@
             border-radius: 30px;
             font-size: 0.8rem;
         }
-        .user-credits {
+        .user-credits { /* This class seems unused in current dashboard, but kept for now */
             background-color: #198754;
             color: white;
             border-radius: 20px;
@@ -109,9 +277,6 @@
             font-weight: bold;
             display: inline-block;
             margin-top: 5px;
-        }
-        .theme-toggle {
-            cursor: pointer;
         }
         .vehicle-badge {
             background-color: #0d6efd;
@@ -121,13 +286,11 @@
             font-size: 0.8rem;
             display: inline-block;
         }
-        /* Add fixed height for dashboard stat cards */
         .dashboard-stat-card .card-body {
             height: 120px;
             display: flex;
             align-items: center;
         }
-        /* Ensure all dashboard cards have the same height including footer */
         .dashboard-stat-card {
             height: 100%;
             display: flex;
@@ -136,110 +299,108 @@
         .dashboard-stat-card .card-footer {
             margin-top: auto;
         }
-        /* Add placeholder footer to maintain same height across all cards */
         .dashboard-stat-card .placeholder-footer {
-            height: 49px; /* Match the height of the card with footer */
+            height: 49px; 
             margin-top: auto;
         }
     </style>
 </head>
 <body>
-    <!-- Top Navbar -->
+    <!-- Top Navbar for mobile -->
     <nav class="navbar navbar-light bg-white fixed-top shadow-sm d-md-none">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#" th:href="@{/}">
                 <i class="fas fa-car-side text-primary me-2"></i>
-                Park & Ride
+                <span class="text-dark">Park & Ride</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
     </nav>
 
     <!-- Sidebar -->
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-        <div class="position-sticky">
-            <div class="d-none d-md-flex align-items-center justify-content-center p-3 mb-3">
-                <a class="navbar-brand fw-bold" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                    <i class="fas fa-car-side text-primary me-2"></i>
-                    Park & Ride
+    <nav id="sidebarMenu" class="d-md-block sidebar collapse">
+        <div class="position-sticky pt-3 sidebar-sticky">
+            
+            <!-- Park & Ride Brand -->
+            <div class="sidebar-brand-logo d-flex align-items-center">
+                <a href="/" th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
+                    <i class="fas fa-car-side text-primary me-2 fa-2x"></i>
+                    <span class="fs-4 fw-bold">Park & Ride</span>
                 </a>
             </div>
-            <div class="text-center mb-4">
+
+            <!-- User Info Block -->
+            <div th:if="${user != null}" class="text-center mb-4 sidebar-user-info">
                 <div class="mb-3">
                     <i class="fas fa-user-circle fa-4x text-primary"></i>
                 </div>
                 <h6 th:text="${user.firstName + ' ' + user.lastName}">User Name</h6>
                 <small class="text-muted d-block" th:text="${user.email}">user@example.com</small>
-                <div class="user-subscription mt-2" th:if="${user.hasActiveSubscription()}">
-                    <span class="badge bg-success">
-                        <i class="fas fa-crown me-1"></i>
-                        <span th:text="${user.subscriptionType.displayName}">Monthly Pass</span>
-                    </span>
+                <small class="text-muted d-block user-points"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</small>
+                <div class="mt-2 user-subscription" th:if="${user.hasActiveSubscription()}">
+                     <span class="badge bg-success">Active Subscription</span>
                 </div>
-                <div class="user-rewards mt-2">
-                    <span class="badge bg-warning text-dark">
-                        <i class="fas fa-gift me-1"></i>
-                        <span th:text="${user.rewardPoints}">100</span> Points
-                    </span>
+                 <div class="mt-2 user-subscription" th:unless="${user.hasActiveSubscription()}" style="min-height: 24px;">
                 </div>
             </div>
+            <hr th:if="${user != null}" class="mx-3 my-2">
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/parking/dashboard" th:href="@{/parking/dashboard}">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
+                    <a class="nav-link active text-primary" th:href="@{/dashboard}"> <!-- Active link updated -->
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/parking/my-reservations" th:href="@{/parking/my-reservations}">
-                        <i class="fas fa-ticket-alt"></i>
-                        My Reservations
+                    <a class="nav-link text-dark" th:href="@{/parking/my-reservations}">
+                        <i class="fas fa-ticket-alt me-2"></i>My Reservations
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/subscriptions" th:href="@{/user/subscriptions}">
-                        <i class="fas fa-crown"></i>
-                        Subscriptions
+                    <a class="nav-link text-dark" th:href="@{/user/subscriptions}">
+                        <i class="fas fa-calendar-check me-2"></i>Subscriptions <!-- Icon updated for consistency -->
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/rewards" th:href="@{/user/rewards}">
-                        <i class="fas fa-gift"></i>
-                        Rewards
+                    <a class="nav-link text-dark" th:href="@{/user/rewards}">
+                        <i class="fas fa-gift me-2"></i>Rewards
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/rides/last-mile" th:href="@{/rides/last-mile}">
-                        <i class="fas fa-shuttle-van"></i>
-                        Last-Mile Rides
+                    <a class="nav-link text-dark" th:href="@{/rides/last-mile}">
+                        <i class="fas fa-shuttle-van me-2"></i>Last-Mile Rides
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/rides/my-rides" th:href="@{/rides/my-rides}">
-                        <i class="fas fa-history"></i>
-                        My Rides
+                    <a class="nav-link text-dark" th:href="@{/rides/my-rides}">
+                        <i class="fas fa-history me-2"></i>My Rides
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/profile" th:href="@{/user/profile}">
-                        <i class="fas fa-user-cog"></i>
-                        Profile
-                    </a>
-                </li>
-                <li class="nav-item mt-5">
-                    <a class="nav-link text-danger" href="/logout" th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                    <a class="nav-link text-dark" th:href="@{/user/profile}">
+                        <i class="fas fa-user-cog me-2"></i>Profile
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <hr class="mx-3 my-2">
+                <button id="themeToggleSidebar" class="btn btn-sm btn-outline-secondary theme-toggle w-100 mb-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-moon me-2"></i> 
+                    <span>Dark Mode</span> 
+                </button>
+                <hr class="mx-3 my-2">
+                <a class="nav-link text-dark d-flex align-items-center justify-content-center" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="content-wrapper">
+    <div class="main-content"> <!-- Changed from <main class="content-wrapper"> -->
         <!-- Alerts -->
         <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
             <span th:text="${successMessage}"></span>
@@ -257,13 +418,7 @@
         <!-- Dashboard Header -->
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Dashboard</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-                <div class="btn-group me-2">
-                    <button id="themeToggle" class="btn btn-sm btn-outline-secondary theme-toggle">
-                        <i class="fas fa-moon"></i> Dark Mode
-                    </button>
-                </div>
-            </div>
+            <!-- Theme toggle button removed from here, now in sidebar footer -->
         </div>
 
         <!-- Quick Stats -->
@@ -290,7 +445,7 @@
                         <div class="d-flex justify-content-between align-items-center w-100">
                             <div>
                                 <h6 class="card-title">My Rewards</h6>
-                                <h2 class="card-text"><span th:text="${user.rewardPoints}">0</span> Points</h2>
+                                <h2 class="card-text"><span th:text="${user.rewardPoints != null ? user.rewardPoints : 0}">0</span> Points</h2> <!-- Standardized points display -->
                             </div>
                             <i class="fas fa-gift fa-3x opacity-50"></i>
                         </div>
@@ -391,95 +546,94 @@
                 </table>
             </div>
         </div>
-    </main>
+         <!-- App Management Section (Clear Ride History) - Retained -->
+        <div class="mt-5 text-center" id="appManagementSection">
+            <hr>
+            <h5>App Management</h5>
+            <button id="clearRideHistoryBtn" class="btn btn-danger mt-2">
+                <i class="fas fa-trash-alt me-1"></i> Clear Ride History
+            </button>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle functionality
-            const themeToggle = document.getElementById('themeToggle');
+            // Standardized Theme toggle functionality
+            const themeToggleSidebar = document.getElementById('themeToggleSidebar');
             const body = document.body;
-            
+            const themeIcon = themeToggleSidebar.querySelector('i');
+            const themeText = themeToggleSidebar.querySelector('span');
+
+            const applyTheme = (darkMode) => {
+                body.classList.toggle('dark-mode', darkMode);
+                if (darkMode) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    themeText.textContent = 'Light Mode';
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    themeText.textContent = 'Dark Mode';
+                }
+            };
+
             // Check for stored preference and apply it
             const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-            if (darkModeEnabled) {
-                body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-            }
+            applyTheme(darkModeEnabled);
             
-            themeToggle.addEventListener('click', function() {
-                body.classList.toggle('dark-mode');
-                
-                const isDarkMode = body.classList.contains('dark-mode');
+            themeToggleSidebar.addEventListener('click', function() {
+                const isDarkMode = body.classList.toggle('dark-mode');
                 localStorage.setItem('darkMode', isDarkMode);
-                
-                if (isDarkMode) {
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-                } else {
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-                }
+                applyTheme(isDarkMode);
             });
 
-            // Update ride count on dashboard from localStorage
+            // Dashboard specific scripts (Ride counts, Clear history)
             updateRideCounts();
             
-            // Check for ride updates (e.g., from cancellations)
             if (localStorage.getItem('ridesUpdated') === 'true') {
-                // Re-count the rides
                 updateRideCounts();
-                // Clear the flag
                 localStorage.removeItem('ridesUpdated');
             }
             
-            // Add a button to clear ride history
-            const mainContent = document.querySelector('main.content-wrapper');
-            const clearHistoryDiv = document.createElement('div');
-            clearHistoryDiv.className = 'mt-5 text-center';
-            clearHistoryDiv.innerHTML = `
-                <hr>
-                <h5>App Management</h5>
-                <button id="clearRideHistoryBtn" class="btn btn-danger mt-2">
-                    <i class="fas fa-trash-alt me-1"></i> Clear Ride History
-                </button>
-            `;
-            mainContent.appendChild(clearHistoryDiv);
-            
-            // Add event listener for clear ride history button
-            document.getElementById('clearRideHistoryBtn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to clear your ride history? This action cannot be undone.')) {
-                    localStorage.removeItem('rideHistory');
-                    alert('Ride history cleared successfully.');
-                    // Update counts
-                    updateRideCounts();
-                }
-            });
+            const clearRideHistoryBtn = document.getElementById('clearRideHistoryBtn');
+            if(clearRideHistoryBtn) { // Check if the button exists
+                clearRideHistoryBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to clear your ride history? This action cannot be undone.')) {
+                        localStorage.removeItem('rideHistory');
+                        alert('Ride history cleared successfully.');
+                        updateRideCounts();
+                    }
+                });
+            }
+
+            // Mobile sidebar toggler functionality
+            const sidebar = document.getElementById('sidebarMenu');
+            const mainContent = document.querySelector('.main-content');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+
+            if (navbarToggler) {
+                navbarToggler.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                    // Optional: Add a class to main-content to push it when sidebar is open on mobile
+                    // This depends on whether the sidebar overlays or pushes content
+                    // For a push effect, you might need additional CSS for .main-content.sidebar-is-open
+                    // mainContent.classList.toggle('sidebar-is-open'); 
+                });
+            }
         });
         
         function updateRideCounts() {
-            // Get all ride history from localStorage
             const rideHistory = JSON.parse(localStorage.getItem('rideHistory')) || [];
-            
-            // Count total rides
             const totalRides = rideHistory.length;
+            const activeRides = rideHistory.filter(ride => ride.status === 'ongoing' || !ride.status).length;
             
-            // Count active (ongoing) rides
-            const activeRides = rideHistory.filter(ride => 
-                ride.status === 'ongoing' || !ride.status
-            ).length;
+            const dashboardRideCountEl = document.getElementById('dashboardRideCount');
+            const dashboardRideHistoryCountEl = document.getElementById('dashboardRideHistoryCount');
             
-            // Update dashboard counts
-            const dashboardRideCount = document.getElementById('dashboardRideCount');
-            const dashboardRideHistoryCount = document.getElementById('dashboardRideHistoryCount');
-            
-            if (dashboardRideCount) {
-                dashboardRideCount.textContent = activeRides;
-            }
-            
-            if (dashboardRideHistoryCount) {
-                dashboardRideHistoryCount.textContent = totalRides;
-            }
+            if (dashboardRideCountEl) dashboardRideCountEl.textContent = activeRides;
+            if (dashboardRideHistoryCountEl) dashboardRideHistoryCountEl.textContent = totalRides;
         }
     </script>
 </body>
-</html> 
+</html>
