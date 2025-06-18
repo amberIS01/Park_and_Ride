@@ -27,9 +27,11 @@ public class ParkingSpot {
     
     @Column(name = "monthly_rate", nullable = false)
     private double monthlyRate;
+    //Marks a class as a JPA entity, which means it will be mapped to a database table.
     
     @OneToMany(mappedBy = "parkingSpot", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
+    
     
     // Default constructor for JPA
     public ParkingSpot() {

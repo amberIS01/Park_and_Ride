@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+//Java class as a Spring bean
+//Marks class as a web controller
 public class HomeController {
 
     private final ParkingService parkingService;

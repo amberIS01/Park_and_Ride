@@ -15,6 +15,7 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
     List<Reservation> findByUser(User user);
     List<Reservation> findByParkingSpot_SpotId(String spotId);
+    //ndicates that the class provides the mechanism for storage, retrieval, search, update and delete operation on objects.
     
     @Query("SELECT r FROM Reservation r WHERE r.status = :status AND r.checkedIn = :isCheckedIn AND r.gracePeriodEnd < :dateTime")
     List<Reservation> findByStatusAndCheckedInAndGracePeriodEndBefore(

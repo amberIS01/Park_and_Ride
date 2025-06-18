@@ -70,6 +70,8 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
+
+        
         
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));

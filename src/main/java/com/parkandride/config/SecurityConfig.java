@@ -1,3 +1,4 @@
+
 package com.parkandride.config;
 
 import com.parkandride.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.http.HttpMethod; // Import HttpMethod
 
 @Configuration
+//Indicates that a class declares one or more @Bean methods
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     

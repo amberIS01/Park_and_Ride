@@ -14,6 +14,7 @@ import java.util.Map;
 public class User {
     
     @Id
+    //primary key of an entity.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     

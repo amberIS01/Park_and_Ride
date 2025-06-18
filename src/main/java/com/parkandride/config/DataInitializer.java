@@ -22,6 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
+    //Ensures you're actually overriding a method from a parent class
     public void run(String... args) {
         // Add test users if none exist
         if (userRepository.count() == 0) {

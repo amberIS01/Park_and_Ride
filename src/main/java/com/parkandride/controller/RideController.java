@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Optional; // Import Optional
 
 @Controller
+//Base URL mapping
 @RequestMapping("/rides")
 public class RideController {
 

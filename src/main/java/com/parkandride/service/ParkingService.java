@@ -25,6 +25,7 @@ public class ParkingService {
     public ParkingService(ParkingSpotRepository parkingSpotRepository, ReservationRepository reservationRepository) {
         this.parkingSpotRepository = parkingSpotRepository;
         this.reservationRepository = reservationRepository;
+        //Specialized @Component annotation that marks a class as a service layer component.
     }
 
     @Transactional
@@ -40,6 +41,7 @@ public class ParkingService {
     @Transactional(readOnly = true)
     public List<ParkingSpot> getAvailableSpots(String location) {
         return parkingSpotRepository.findByLocationAndIsOccupied(location, false);
+        //Defines the scope of a single database transaction.
     }
     
     @Transactional(readOnly = true)
