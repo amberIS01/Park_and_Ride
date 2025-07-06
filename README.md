@@ -1,6 +1,5 @@
 # Park & Ride: Smart Urban Mobility System
 
-![Park and Ride Logo](docs/images/logo.png)
 
 ## About Park & Ride
 
