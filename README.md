@@ -101,7 +101,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Icons provided by [Font Awesome](https://fontawesome.com/)
 - Bootstrap themes and components
 - Open source community for invaluable resources and inspiration
-
----
-
-Developed with ❤️ by Team Park & Ride 
